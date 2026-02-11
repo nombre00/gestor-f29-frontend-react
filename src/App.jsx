@@ -1,7 +1,10 @@
 // App.jsx
 // Punto central de enrutamiento de la aplicación
 
+// Bibliotecas.
 import { Routes, Route, Navigate } from 'react-router-dom'
+// Contextos.
+import AppProviders from './context/MasterContext'
 // Layouts.
 import DashboardLayout from './layouts/DashboardLayout'
 // páginas.
@@ -14,34 +17,36 @@ import VistaResumenAnual from './pages/GestorResumenAnual'
 
 function App() {
   return (
-    <div className="d-flex flex-column min-vh-100">
-      <Routes>
+    <AppProviders>  {/* Contexto */}
+      <div className="d-flex flex-column min-vh-100">
+        <Routes>
 
-        {/* Rutas públicas - sin layout ni sidebar */}
-        <Route path="/login" element={<Login />} />
-        
-        {/* Rutas protegidas - con DashboardLayout (sidebar + margen) */}
-        <Route element={<DashboardLayout />}>
-          <Route path="/inicio" element={<VistaInicio />} />
-          <Route path="/gestor" element={<GestorF29 />} />
-          <Route path="/resumen" element={<VistaResumenF29 />} />
-          <Route path="/resumen-anual" element={<VistaResumenAnual />} />
-          <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
-        </Route>
+          {/* Rutas públicas - sin layout ni sidebar */}
+          <Route path="/login" element={<Login />} />
+          
+          {/* Rutas protegidas - con DashboardLayout (sidebar + margen) */}
+          <Route element={<DashboardLayout />}>
+            <Route path="/inicio" element={<VistaInicio />} />
+            <Route path="/gestor" element={<GestorF29 />} />
+            <Route path="/resumen" element={<VistaResumenF29 />} />
+            <Route path="/resumen-anual" element={<VistaResumenAnual />} />
+            <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+          </Route>
 
-        {/* Redirecciones y 404 */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={
-          <div className="container my-5 text-center">
-            <h2>404 - Página no encontrada</h2>
-            <p>
-              Vuelve al <a href="/login">inicio de sesión</a>
-            </p>
-          </div>
-        } />
+          {/* Redirecciones y 404 */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={
+            <div className="container my-5 text-center">
+              <h2>404 - Página no encontrada</h2>
+              <p>
+                Vuelve al <a href="/login">inicio de sesión</a>
+              </p>
+            </div>
+          } />
 
-      </Routes>
-    </div>
+        </Routes>
+      </div>
+    </AppProviders>
   )
 }
 
