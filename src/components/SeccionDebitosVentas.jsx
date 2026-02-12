@@ -1,12 +1,9 @@
-// Seccion de la vista resumenF29.
+// Seccion editable de la vista resumenF29.
 
 
-import { formatCLP } from '../services/F29Calculator'  // asumiendo que ya lo tienes
+import { formatCLP, unformatCLP } from '../services/F29Calculator';
 
-export default function SeccionDebitosVentas({ resumen }) {
-  const detalle = resumen.ventas_detalle || []
-  const total = resumen.ventas_total || {}
-
+export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onChange }) { // MODIFICADO: props para edición
   return (
     <div className="card mb-4 shadow-sm border-info">
       <div className="card-header bg-info text-white">
@@ -25,28 +22,53 @@ export default function SeccionDebitosVentas({ resumen }) {
               </tr>
             </thead>
             <tbody>
-              {detalle.map((det, idx) => (
+              {ventasDetalle.map((det, idx) => (
                 <tr key={idx}>
                   <td>{det.tipo}</td>
                   <td>{det.desc || ''}</td>
-                  <td className="text-end">{det.td || 0}</td>
-                  <td className="text-end">{formatCLP(det.neto || 0)}</td>
-                  <td className="text-end">{formatCLP(det.iva || 0)}</td>
+                  <td className="text-end">
+                    {/* NUEVO: input editable */}
+                    <input
+                      type="text"
+                      className="form-control form-control-sm text-end"
+                      value={formatCLP(det.td || 0)}
+                      onChange={(e) => onChange(idx, 'td', unformatCLP(e.target.value))}
+                      onBlur={(e) => { e.target.value = formatCLP(unformatCLP(e.target.value)); }}
+                    />
+                  </td>
+                  <td className="text-end">
+                    <input
+                      type="text"
+                      className="form-control form-control-sm text-end"
+                      value={formatCLP(det.neto || 0)}
+                      onChange={(e) => onChange(idx, 'neto', unformatCLP(e.target.value))}
+                      onBlur={(e) => { e.target.value = formatCLP(unformatCLP(e.target.value)); }}
+                    />
+                  </td>
+                  <td className="text-end">
+                    <input
+                      type="text"
+                      className="form-control form-control-sm text-end"
+                      value={formatCLP(det.iva || 0)}
+                      onChange={(e) => onChange(idx, 'iva', unformatCLP(e.target.value))}
+                      onBlur={(e) => { e.target.value = formatCLP(unformatCLP(e.target.value)); }}
+                    />
+                  </td>
                 </tr>
               ))}
               <tr className="table-active fw-bold">
-                <td colSpan="3" className="text-end">TOTAL NETO</td>
-                <td className="text-end">{formatCLP(total.neto || 0)}</td>
+                <td colSpan="4" className="text-end">TOTAL NETO</td>
+                <td className="text-end">{formatCLP(ventasTotal.neto || 0)}</td>
                 <td></td>
               </tr>
               <tr className="table-active fw-bold">
                 <td colSpan="4" className="text-end">TOTAL IVA</td>
-                <td className="text-end">{formatCLP(total.iva || 0)}</td>
+                <td className="text-end">{formatCLP(Math.max(0, ventasTotal.iva || 0))}</td>  {/** Este valor no puede ser menor que 0. */}
               </tr>
             </tbody>
           </table>
         </div>
       </div>
     </div>
-  )
+  );
 }

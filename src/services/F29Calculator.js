@@ -1,9 +1,15 @@
 // Cálculo para la página vistaresumenf29.
 
 
+// Formatea para presentación.
 export const formatCLP = (num) => {
   return num.toLocaleString('es-CL', { minimumFractionDigits: 0 })
 }
+
+// Desformatea para edición
+export const unformatCLP = (value) => {
+  return parseInt(value.replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
+};
 
 // Recalcula todos los totales y actualiza el objeto resumen
 export const recalcularResumen = (resumen) => {
@@ -20,6 +26,8 @@ export const recalcularResumen = (resumen) => {
   total_td_ventas += Number(cod61.td)
   total_neto_ventas -= Number(cod61.neto)
   total_iva_ventas -= Number(cod61.iva)
+
+  total_iva_ventas = Math.max(0, total_iva_ventas); // Por normativa este valor nunca es nemor que 0.
 
   resumen.ventas_total = {
     td: total_td_ventas,
@@ -40,6 +48,8 @@ export const recalcularResumen = (resumen) => {
   total_td_compras += Number(cod61_comp.td)
   total_neto_compras -= Number(cod61_comp.neto)
   total_iva_rec -= Number(cod61_comp.iva_rec)
+
+  total_iva_rec = Math.max(0, total_iva_rec);  // Si el iva_rec es < 0 entonces iva_rec = 0; no puede tomar valores negativos.
 
   resumen.compras_total = {
     td: total_td_compras,

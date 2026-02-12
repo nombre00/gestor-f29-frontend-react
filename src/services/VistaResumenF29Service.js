@@ -3,7 +3,7 @@
 
 import api from '../api/api'
 
-/**
+/** 
  * Exporta el resumen F29 al backend y descarga el Excel generado
  * @param {Object} resumen - El objeto completo del resumen
  * @returns {Promise<void>}
