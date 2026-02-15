@@ -1,33 +1,7 @@
 // Service de la página gestorf29.
 
 
-import axios from 'axios'
-
-const API_BASE_URL = 'http://localhost:5000/api'  // cámbialo a .env después
-
-const api = axios.create({
-  baseURL: API_BASE_URL,
-  timeout: 30000,  // 30 segundos, ajusta según tus archivos grandes
-  headers: {
-    'Accept': 'application/json',
-  },
-})
-
-// Interceptor para manejar errores globales (opcional pero recomendado)
-api.interceptors.response.use(
-  response => response,
-  error => {
-    let message = 'Error desconocido'
-    if (error.response) {
-      message = error.response.data?.message || `Error ${error.response.status}`
-    } else if (error.request) {
-      message = 'No se pudo conectar al servidor'
-    } else {
-      message = error.message
-    }
-    throw new Error(message)
-  }
-)
+import api from '../api/api' 
 
 /**
  * Procesa los archivos y devuelve el resumen F29 en JSON
@@ -63,9 +37,9 @@ export const procesarYObtenerResumen = async ({ files, remanente, importaciones 
       throw new Error('El backend no devolvió un resumen válido')
     }
 
-    return resumen  // { encabezado, ventas_detalle, compras_detalle, ... }
+    return resumen
   } catch (error) {
-    throw error  // lo atrapamos en la página
+    throw error
   }
 }
 

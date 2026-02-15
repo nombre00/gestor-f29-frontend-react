@@ -3,8 +3,9 @@
 
 import axios from 'axios'
 
+// Instancia de la conección y ruta 'raiz'.
 const api = axios.create({
-  baseURL: 'http://localhost:5000/api',
+  baseURL: 'http://localhost:8000',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',
@@ -12,13 +13,25 @@ const api = axios.create({
   },
 })
 
-// Interceptor para errores (opcional pero útil)
+// Interceptor para agregar token automáticamente.
+api.interceptors.request.use(
+  config => {
+    const token = localStorage.getItem('token')
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`
+    }
+    return config
+  },
+  error => Promise.reject(error)
+)
+
+// Interceptor para errores, revisa que el token del usuario esté presente y lo valida.
 api.interceptors.response.use(
   response => response,
   error => {
     let message = 'Error desconocido'
     if (error.response) {
-      message = error.response.data?.message || `Error ${error.response.status}`
+      message = error.response.data?.detail || error.response.data?.message || `Error ${error.response.status}`
     } else if (error.request) {
       message = 'No se pudo conectar al servidor'
     } else {

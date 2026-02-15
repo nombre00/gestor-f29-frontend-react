@@ -1,4 +1,4 @@
-// Servicio de la vista vistaResumenF29.
+// Servicio de la vista vistaResumenF29.  
 
 
 import api from '../api/api'

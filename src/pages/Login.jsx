@@ -1,4 +1,4 @@
-// El usuario ingresa acá.
+// El usuario ingresa acá. 
 // El login usa contexto para compartir con otras páginas el estado login del usuario, su identificación y token.
 
 // Bibliotecas.
@@ -8,6 +8,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 // Service.
 import { loginUser } from '../services/LoginService'
+
 
 export default function Login() {
     // Variables que usa el formulario, recuerda que tambien tenemos errores en cada input.
@@ -27,7 +28,7 @@ export default function Login() {
     try {
         // Guardamos en variables el retorno de la función del service.
         const { user, token } = await loginUser({ email, password })
-        login({ ...user, token })  // o solo user si no usas token por ahora
+        login({ ...user, token })
 
       navigate('/inicio')  // Si todo bien navigate nos manda a la página inicio.
     } catch (err) {
