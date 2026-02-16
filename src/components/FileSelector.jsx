@@ -5,8 +5,8 @@ import { useState } from 'react'
 export default function FileSelector({
   label,
   accept = ".xlsx,.xls,.csv,.pdf",
-  onFileChange,
-  initialFileName = '',
+  onFileChange,  // Función que recibe el archivo.
+  initialFileName = '',  // Estado original.
 }) {
   // Variables para manejar estados.
   const [fileName, setFileName] = useState(initialFileName)
@@ -14,11 +14,11 @@ export default function FileSelector({
 
   // Función escuchadora del estado. 
   const handleChange = (e) => {
-    const file = e.target.files[0]
-    if (file) {
-      setFileName(file.name)
-      setStatus('✓ Cargado')
-      onFileChange(file)  // pasamos el File object real
+    const file = e.target.files[0]  // file es igual al archivo seleccionado.
+    if (file) {  // Si el archivo existe:
+      setFileName(file.name)  // Se asigna nombre a la variable filename.
+      setStatus('✓ Cargado')  // Cambiamos el estado.
+      onFileChange(file)  // pasamos el File object real.
     }
   }
 

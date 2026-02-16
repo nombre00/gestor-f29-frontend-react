@@ -1,4 +1,5 @@
 // Componente reutilizable para ingresar valores numéricos.
+// El código formatea 3 veces el número para evitar parpadeos, es la buena práctica.
 
 import { useState, useEffect } from 'react'   // Hooks.
 
@@ -9,16 +10,16 @@ export default function NumberInput({
   width = '140px',  // Dimención.
 }) {
   // Escuchador de cambios que recarga la función que formatea a pesos chilenos.
-  const [displayValue, setDisplayValue] = useState(value.toLocaleString('es-CL'))
+  const [displayValue, setDisplayValue] = useState(value.toLocaleString('es-CL'))  // Primer formateo
 
   // Función que formatea a pesos chilenos.
   // useEffect: es el código que se ejecuta despues que la variable se vuelve a renderear, sería un efecto secundario.
-  useEffect(() => {
-    setDisplayValue(value.toLocaleString('es-CL'))
+  useEffect(() => {  // Segundo formateo
+    setDisplayValue(value.toLocaleString('es-CL'))  // Formateamos.
   }, [value])
 
-  const handleChange = (e) => {
-    const raw = e.target.value.replace(/\./g, '')
+  const handleChange = (e) => {  // Función escuchadora del re-rendereo de la variable.
+    const raw = e.target.value.replace(/\./g, '')  // Tercer formateo
     const num = parseInt(raw, 10) || 0
     onChange(num)
     setDisplayValue(num.toLocaleString('es-CL'))

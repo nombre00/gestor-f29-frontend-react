@@ -59,7 +59,7 @@ export default function GestorF29() {
     setError('')
     try {
       const resumen = await procesarYObtenerResumen({ files, remanente, importaciones })  // LLamamos a la función del service.
-      navigate('/resumen', { state: { resumen } })
+      navigate('/resumen', { state: { resumen } })  // Acá le pasamos el resumen como un estado a la página siguiente.
     } catch (err) {
       setError(err.message || 'Error al generar resumen')
     } finally {

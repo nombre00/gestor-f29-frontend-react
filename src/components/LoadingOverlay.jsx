@@ -1,7 +1,6 @@
 // Spiner para esperas de llamádas asíncronas.
 
 
-// src/components/LoadingOverlay.jsx
 export default function LoadingOverlay({ text = 'Procesando...' }) {
   return (
     <div
