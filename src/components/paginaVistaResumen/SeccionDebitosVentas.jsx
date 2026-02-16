@@ -1,7 +1,7 @@
 // Seccion editable de la vista resumenF29.
 
 
-import { formatCLP, unformatCLP } from '../services/F29Calculator';
+import { formatCLP, unformatCLP } from '../../services/F29Calculator';
 
 export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onChange }) { // MODIFICADO: props para edición
   return (

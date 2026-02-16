@@ -2,7 +2,7 @@
 
 
 // Módulos.
-import { formatCLP, unformatCLP } from '../services/F29Calculator';  // Importamos la función que formatéa los valores.
+import { formatCLP, unformatCLP } from '../../services/F29Calculator';  // Importamos la función que formatéa los valores.
 
 
 // Recibe como parámetros los diccionarios del ResumenF29, el remanente y una función escuchadora propia para re-renderizar cuando el usuario edita un valor.

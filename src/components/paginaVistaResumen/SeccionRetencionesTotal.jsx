@@ -1,7 +1,7 @@
 // Sección de la vista resumenF29.
 
 
-import { formatCLP, unformatCLP } from '../services/F29Calculator';
+import { formatCLP, unformatCLP } from '../../services/F29Calculator';
 
 export default function SeccionRetencionesTotal({
   remuneraciones,

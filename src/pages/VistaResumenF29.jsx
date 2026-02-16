@@ -6,10 +6,10 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 // Componentes
-import SeccionContribuyente from '../components/SeccionContribuyente';
-import SeccionDebitosVentas from '../components/SeccionDebitosVentas';
-import SeccionCreditosCompras from '../components/SeccionCreditosCompras';
-import SeccionRetencionesTotal from '../components/SeccionRetencionesTotal';
+import SeccionContribuyente from '../components/paginaVistaResumen/SeccionContribuyente';
+import SeccionDebitosVentas from '../components/paginaVistaResumen/SeccionDebitosVentas';
+import SeccionCreditosCompras from '../components/paginaVistaResumen/SeccionCreditosCompras';
+import SeccionRetencionesTotal from '../components/paginaVistaResumen/SeccionRetencionesTotal';
 // Services
 import { recalcularResumen } from '../services/F29Calculator';
 import { exportarResumenAExcel } from '../services/VistaResumenF29Service';
