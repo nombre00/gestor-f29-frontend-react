@@ -11,6 +11,8 @@ import api from '../api/api'
  * @param {Object} params.importaciones
  * @returns {Promise<Object>} Resumen F29
  */
+
+
 export const procesarYObtenerResumen = async ({ files, remanente, importaciones }) => {
   const formData = new FormData()
 

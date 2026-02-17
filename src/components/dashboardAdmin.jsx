@@ -1,4 +1,4 @@
-// Dashboard del admin para manejar el sistema: gestionar usuarios.
+// Dashboard del admin para manejar el sistema: gestionar usuarios. 
 
 
 // Bibliotecas.
@@ -25,7 +25,6 @@ export default function DashboardAdmin() {
             <i className="bi bi-graph-up-arrow me-2"></i>
             F29 Manager
           </span>
-          
           <div className="d-flex align-items-center text-white">
             <span className="me-3">
               <i className="bi bi-building me-1"></i>
@@ -42,7 +41,6 @@ export default function DashboardAdmin() {
           </div>
         </div>
       </nav>
-
       {/* Pestañas de navegación */}
       <div className="bg-white shadow-sm">
         <div className="container-fluid">
@@ -92,7 +90,6 @@ export default function DashboardAdmin() {
           </ul>
         </div>
       </div>
-
       {/* Contenido de las pestañas */}
       <div className="container-fluid">
         {tabActiva === 'usuarios' && <AdministrarUsuarios />}

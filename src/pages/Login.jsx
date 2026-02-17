@@ -27,8 +27,9 @@ export default function Login() {
 
     try {
         // Guardamos en variables el retorno de la función del service.
-        const { user, token } = await loginUser({ email, password })
-        login({ ...user, token })
+        const { user, token } = await loginUser({ email, password })  // Guardamos el usuario.
+        localStorage.setItem('token', token)  // Guardamos el token
+        login(user, token)
 
       navigate('/inicio')  // Si todo bien navigate nos manda a la página inicio.
     } catch (err) {

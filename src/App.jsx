@@ -14,6 +14,8 @@ import VistaInicio from './pages/Inicio'
 import GestorF29 from './pages/GestorF29'
 import VistaResumenF29 from './pages/VistaResumenF29'
 import VistaResumenAnual from './pages/GestorResumenAnual'
+// Componentes.
+import PrivateRoute from './components/privateRoute'
 
 function App() {
   return (
@@ -25,12 +27,14 @@ function App() {
           <Route path="/login" element={<Login />} />
           
           {/* Rutas protegidas - con DashboardLayout (sidebar + margen) */}
-          <Route element={<DashboardLayout />}>
-            <Route path="/inicio" element={<VistaInicio />} />
-            <Route path="/gestor" element={<GestorF29 />} />
-            <Route path="/resumen" element={<VistaResumenF29 />} />
-            <Route path="/resumen-anual" element={<VistaResumenAnual />} />
-            <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+          <Route element={<PrivateRoute />}>
+            <Route element={<DashboardLayout />}>
+              <Route path="/inicio" element={<VistaInicio />} />
+              <Route path="/gestor" element={<GestorF29 />} />
+              <Route path="/resumen" element={<VistaResumenF29 />} />
+              <Route path="/resumen-anual" element={<VistaResumenAnual />} />
+              <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+            </Route>
           </Route>
 
           {/* Redirecciones y 404 */}

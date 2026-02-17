@@ -4,7 +4,7 @@
 // Componente para gestionar usuarios de la empresa (invitar, listar, desactivar)
 
 import { useState, useEffect } from 'react';
-import ModalInvitarUsuario from '../modalInvitarUsuario';
+import ModalInvitarUsuario from './modalInvitarUsuario';
 import { 
   obtenerUsuarios, 
   desactivarUsuario, 
@@ -169,7 +169,6 @@ export default function AdministrarUsuarios() {
           Invitar Usuario
         </button>
       </div>
-
       {/* Mensaje de error global */}
       {error && (
         <div className="alert alert-danger alert-dismissible fade show" role="alert">
@@ -181,7 +180,6 @@ export default function AdministrarUsuarios() {
           ></button>
         </div>
       )}
-
       {/* Sección: Usuarios Activos */}
       <div className="card mb-4 shadow-sm">
         <div className="card-header bg-success text-white">
@@ -197,15 +195,19 @@ export default function AdministrarUsuarios() {
                 <span className="visually-hidden">Cargando...</span>
               </div>
             </div>
-          ) : usuarios.filter(u => u.activo).length === 0 ? (
+          ) : usuarios.filter(u => u.activo).length === 0 ? ( // Cuando no hay usuarios activos.
             <div className="text-center py-5 text-muted">
               <i className="bi bi-inbox fs-1"></i>
               <p className="mt-3">No hay usuarios activos</p>
             </div>
           ) : (
-            <div className="table-responsive">
+            // tabla de usuarios activos.
+            <div className="table-responsive"> {/** para hacer la tabla responsiba en mobile */}
+              {/** tabla */}
               <table className="table table-hover mb-0">
+                {/** header de la tabla */}
                 <thead className="table-light">
+                  {/** contenido del header. */}
                   <tr>
                     <th>Nombre</th>
                     <th>Email</th>
@@ -215,20 +217,25 @@ export default function AdministrarUsuarios() {
                     <th className="text-center">Acciones</th>
                   </tr>
                 </thead>
+                {/** Cuerpo de la tabla. */}
                 <tbody>
-                  {usuarios.filter(u => u.activo).map((usuario) => (
+                  {usuarios.filter(u => u.activo).map((usuario) => (  // Iretación de los usuarios activos de la empresa.
                     <tr key={usuario.id}>
                       <td>
+                        {/** nombre completo */}
                         <i className="bi bi-person-circle me-2 text-primary"></i>
                         {usuario.nombre} {usuario.apellido || ''}
                       </td>
+                      {/** mail */}
                       <td>{usuario.email}</td>
                       <td>
+                        {/** rol */}
                         <BadgeRol rol={usuario.rol} />
                       </td>
                       <td>{formatearFecha(usuario.ultimo_acceso)}</td>
                       <td>{formatearFecha(usuario.created_at)}</td>
                       <td className="text-center">
+                        {/** botón para desactivar al usuario */}
                         <button 
                           className="btn btn-sm btn-outline-danger"
                           onClick={() => handleDesactivar(usuario.id)}
@@ -246,7 +253,6 @@ export default function AdministrarUsuarios() {
           )}
         </div>
       </div>
-
       {/* Sección: Usuarios Inactivos */}
       {usuarios.filter(u => !u.activo).length > 0 && (
         <div className="card mb-4 shadow-sm">
@@ -298,7 +304,6 @@ export default function AdministrarUsuarios() {
           </div>
         </div>
       )}
-
       {/* Sección: Invitaciones Pendientes */}
       {invitaciones.length > 0 && (
         <div className="card shadow-sm">
@@ -358,7 +363,6 @@ export default function AdministrarUsuarios() {
           </div>
         </div>
       )}
-
       {/* Modal de invitación */}
       {showInviteModal && (
         <ModalInvitarUsuario
