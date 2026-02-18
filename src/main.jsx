@@ -14,7 +14,7 @@ import 'bootstrap-icons/font/bootstrap-icons.min.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
-    <BrowserRouter>           {/* Rnrutador*/}
+    <BrowserRouter>           {/* Enrutador*/}
       <App />
     </BrowserRouter>
   </React.StrictMode>

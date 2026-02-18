@@ -70,10 +70,10 @@ export default function Sidebar() {
       </ul>
 
       <hr className="text-white" />
-
+      {/** drop down del perfil */}
       <div className="mt-auto">
         <div className="dropdown">
-          <button 
+          <button
             className="btn btn-link text-white dropdown-toggle text-decoration-none w-100 text-start"
             type="button"
             data-bs-toggle="dropdown"
@@ -83,9 +83,19 @@ export default function Sidebar() {
           </button>
           <ul className="dropdown-menu dropdown-menu-dark">
             <li>
-              <button 
+              <NavLink
+                to="/perfil"
                 className="dropdown-item"
-                onClick={handleLogout}  // ← llama a la función real
+              >
+                <i className="bi bi-person-badge me-2"></i>
+                Mi Perfil
+              </NavLink>
+            </li>
+            <li><hr className="dropdown-divider" /></li>
+            <li>
+              <button
+                className="dropdown-item"
+                onClick={handleLogout}
               >
                 <i className="bi bi-box-arrow-right me-2"></i>
                 Cerrar Sesión

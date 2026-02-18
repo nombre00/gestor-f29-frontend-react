@@ -1,64 +1,46 @@
-// Servicio para gestión de usuarios
+// Servicio para gestión de usuarios (incluye perfil propio)
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
-
-/**
- * Obtiene el token de autenticación del localStorage
- */
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  };
-};
+import api from '../api/api';
 
 /**
- * Obtener lista de usuarios de la empresa
+ * Obtener lista de usuarios de la empresa (solo admins)
  */
 export const obtenerUsuarios = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/usuarios`, {
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al obtener usuarios');
-  }
-
-  return await response.json();
+  const response = await api.get('/api/usuarios');
+  return response.data;
 };
 
 /**
  * Desactivar un usuario
  */
 export const desactivarUsuario = async (usuarioId) => {
-  const response = await fetch(`${API_BASE_URL}/api/usuarios/${usuarioId}/desactivar`, {
-    method: 'PUT',
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al desactivar usuario');
-  }
-
-  return await response.json();
+  const response = await api.put(`/api/usuarios/${usuarioId}/desactivar`);
+  return response.data;
 };
 
 /**
  * Reactivar un usuario
  */
 export const reactivarUsuario = async (usuarioId) => {
-  const response = await fetch(`${API_BASE_URL}/api/usuarios/${usuarioId}/reactivar`, {
-    method: 'PUT',
-    headers: getAuthHeaders()
+  const response = await api.put(`/api/usuarios/${usuarioId}/reactivar`);
+  return response.data;
+};
+
+/**
+ * Obtener perfil del usuario autenticado
+ */
+export const obtenerPerfil = async () => {
+  const response = await api.get('/api/usuarios/me');
+  return response.data;
+};
+
+/**
+ * Cambiar contraseña del usuario autenticado
+ */
+export const cambiarPassword = async ({ password_actual, password_nueva }) => {
+  const response = await api.put('/api/usuarios/me/password', {
+    password_actual,
+    password_nueva
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al reactivar usuario');
-  }
-
-  return await response.json();
+  return response.data;
 };

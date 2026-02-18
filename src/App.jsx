@@ -14,6 +14,8 @@ import VistaInicio from './pages/Inicio'
 import GestorF29 from './pages/GestorF29'
 import VistaResumenF29 from './pages/VistaResumenF29'
 import VistaResumenAnual from './pages/GestorResumenAnual'
+import VistaRegistro from './pages/RegistroUsuario'
+import VistaPerfil from './pages/Perfil'
 // Componentes.
 import PrivateRoute from './components/privateRoute'
 
@@ -25,6 +27,7 @@ function App() {
 
           {/* Rutas públicas - sin layout ni sidebar */}
           <Route path="/login" element={<Login />} />
+          <Route path="/registro" element={<VistaRegistro />} />
           
           {/* Rutas protegidas - con DashboardLayout (sidebar + margen) */}
           <Route element={<PrivateRoute />}>
@@ -34,6 +37,7 @@ function App() {
               <Route path="/resumen" element={<VistaResumenF29 />} />
               <Route path="/resumen-anual" element={<VistaResumenAnual />} />
               <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+              <Route path="/perfil" element={<VistaPerfil />} />
             </Route>
           </Route>
 

@@ -1,116 +1,57 @@
 // Servicio para gestión de invitaciones de usuarios
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
+// Servicio para gestión de invitaciones
 
-/**
- * Obtiene el token de autenticación del localStorage
- */
-const getAuthHeaders = () => {
-  const token = localStorage.getItem('token');
-  return {
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${token}`
-  };
-};
+import api from '../api/api';
 
 /**
  * Crear una nueva invitación
  */
 export const crearInvitacion = async (invitacionData) => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones`, {
-    method: 'POST',
-    headers: getAuthHeaders(),
-    body: JSON.stringify(invitacionData)
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al crear invitación');
-  }
-
-  return await response.json();
+  const response = await api.post('/api/invitaciones', invitacionData);
+  return response.data;
 };
 
 /**
  * Obtener lista de invitaciones pendientes
  */
 export const obtenerInvitacionesPendientes = async () => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones/pendientes`, {
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al obtener invitaciones');
-  }
-
-  return await response.json();
+  const response = await api.get('/api/invitaciones/pendientes');
+  return response.data;
 };
 
 /**
  * Reenviar una invitación
  */
 export const reenviarInvitacion = async (invitacionId) => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones/${invitacionId}/reenviar`, {
-    method: 'POST',
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al reenviar invitación');
-  }
-
-  return await response.json();
+  const response = await api.post(`/api/invitaciones/${invitacionId}/reenviar`);
+  return response.data;
 };
 
 /**
  * Cancelar una invitación
  */
 export const cancelarInvitacion = async (invitacionId) => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones/${invitacionId}`, {
-    method: 'DELETE',
-    headers: getAuthHeaders()
-  });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al cancelar invitación');
-  }
-
-  return await response.json();
+  const response = await api.delete(`/api/invitaciones/${invitacionId}`);
+  return response.data;
 };
 
 /**
- * Validar un token de invitación
+ * Validar un token de invitación (endpoint público, sin auth)
  */
 export const validarTokenInvitacion = async (token) => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones/validar-token/${token}`);
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Token inválido');
-  }
-
-  return await response.json();
+  const response = await api.get(`/api/invitaciones/validar-token/${token}`, {
+    headers: { Authorization: undefined }  // Excluir header de auth, es ruta pública
+  });
+  return response.data;
 };
 
 /**
- * Completar registro con token de invitación
+ * Completar registro con token de invitación (endpoint público, sin auth)
  */
 export const completarRegistro = async (registroData) => {
-  const response = await fetch(`${API_BASE_URL}/api/invitaciones/completar-registro`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify(registroData)
+  const response = await api.post('/api/invitaciones/completar-registro', registroData, {
+    headers: { Authorization: undefined }  // Excluir header de auth, es ruta pública
   });
-
-  if (!response.ok) {
-    const error = await response.json();
-    throw new Error(error.detail || 'Error al completar registro');
-  }
-
-  return await response.json();
+  return response.data;
 };
