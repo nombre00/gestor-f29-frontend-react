@@ -9,12 +9,12 @@ import {
   obtenerUsuarios, 
   desactivarUsuario, 
   reactivarUsuario 
-} from '../services/usuariosService';
+} from '../../services/usuariosService';
 import { 
   obtenerInvitacionesPendientes,
   reenviarInvitacion,
   cancelarInvitacion
-} from '../services/invitacionesService';
+} from '../../services/invitacionesService';
 
 export default function AdministrarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);

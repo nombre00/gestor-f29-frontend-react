@@ -1,50 +1,28 @@
-import { useState, useEffect } from 'react';
+//  Página inicio.
+
+
+// Página inicio.
+// Lee el usuario directo del AuthContext — no hace fetch propio.
+// El AuthContext ya recupera token y user del localStorage al montar.
+
+import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import DashboardAdmin from '../components/dashboardAdmin';
-import DashboardContador from '../components/dashboardContador';
-import api from '../api/api';
+import { useAuth } from '../context/AuthContext';
+import DashboardAdmin    from '../components/dashboardAdmin/dashboardAdmin';
+import DashboardContador from '../components/dashboardContador/dashboardContador';
+
 
 export default function VistaInicio() {
-  const [usuario, setUsuario] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { user, isAuthenticated, isLoading } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
-    fetchUsuario();
-  }, []);
+    if (isLoading) return;          // Espera a que AuthContext lea el localStorage.
+    if (!isAuthenticated) navigate('/login');
+  }, [isLoading, isAuthenticated, navigate]);
 
-  // Esta función revisa el token del ususario.
-  const fetchUsuario = async () => {
-    try {
-      const token = localStorage.getItem('token');
-      //console.log('[Inicio] Token encontrado:', !!token, token?.substring(0, 20) + '...'); // ver si hay token
-      if (!token) {
-        //console.log('[Inicio] No hay token → redirigiendo a login')
-        navigate('/login');
-        return;
-      }
-      // Usamos api.get → el interceptor ya agrega el Bearer token automáticamente
-      //console.log('[Inicio] Intentando GET /auth/me');
-      const response = await api.get('/auth/me');
-      //console.log('[Inicio] Respuesta OK:', response.status);
-      //console.log('[Inicio] Datos recibidos:', response.data);
-      // La respuesta del backend /me devuelve directamente el objeto usuario
-      // (no envuelto en { usuario: ... }), según lo que configuramos
-      setUsuario(response.data);
-    } catch (err) {
-      //console.error('Error al cargar usuario:', err);
-      // Opcional: mostrar mensaje más claro según el tipo de error
-      if (err.response?.status === 401 || err.response?.status === 403) {
-        //console.log('Token inválido o usuario inactivo → cerrando sesión');
-        localStorage.removeItem('token');
-        navigate('/login');
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
-  {/** Spiner. */}
-  if (loading) {
+  // Mientras AuthContext lee el localStorage, muestra spinner.
+  if (isLoading) {
     return (
       <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '100vh' }}>
         <div className="text-center">
@@ -56,29 +34,15 @@ export default function VistaInicio() {
       </div>
     );
   }
-  {/** contenido si no hay usuario. */}
-  if (!usuario) {
-    return (
-      <div className="container py-5 text-center">
-        <div className="alert alert-danger">
-          <i className="bi bi-exclamation-triangle-fill me-2"></i>
-          Error al cargar información del usuario
-        </div>
-        <button 
-          className="btn btn-primary mt-3"
-          onClick={() => navigate('/login')}
-        >
-          Volver al Login
-        </button>
-      </div>
-    );
-  }
-  {/** La página cuando todo marcha bien. */}
+
+  // Si no hay usuario tras cargar, el useEffect ya redirigió — no renderizar nada.
+  if (!user) return null;
+
   return (
     <div className="bg-light min-vh-100">
-      {usuario.rol === 'admin' && <DashboardAdmin usuario={usuario} />}
-      {usuario.rol === 'contador' && <DashboardContador usuario={usuario} />}
-      {usuario.rol === 'asistente' && (
+      {user.rol === 'admin'    && <DashboardAdmin    usuario={user} />}
+      {user.rol === 'contador' && <DashboardContador usuario={user} />}
+      {user.rol === 'asistente' && (
         <div className="container py-5 text-center">
           <div className="alert alert-info">
             <i className="bi bi-info-circle-fill me-2"></i>

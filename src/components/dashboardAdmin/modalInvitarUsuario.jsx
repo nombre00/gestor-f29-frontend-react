@@ -3,7 +3,7 @@
 // Modal para invitar nuevos usuarios al sistema
 
 import { useState } from 'react';
-import { crearInvitacion } from '../services/invitacionesService';
+import { crearInvitacion } from '../../services/invitacionesService';
 
 export default function ModalInvitarUsuario({ onClose, onInvitacionEnviada }) {
   const [formData, setFormData] = useState({

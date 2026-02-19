@@ -9,7 +9,7 @@ import AppProviders from './context/MasterContext'
 import DashboardLayout from './layouts/DashboardLayout'
 // páginas.
 import Login from './pages/Login'
-import RegistrarEmpresa from './pages/RegistrarEmpresa'
+import RegistrarCliente from './pages/RegistrarCliente'
 import VistaInicio from './pages/Inicio'
 import GestorF29 from './pages/GestorF29'
 import VistaResumenF29 from './pages/VistaResumenF29'
@@ -36,7 +36,7 @@ function App() {
               <Route path="/gestor" element={<GestorF29 />} />
               <Route path="/resumen" element={<VistaResumenF29 />} />
               <Route path="/resumen-anual" element={<VistaResumenAnual />} />
-              <Route path="/registrar-empresa" element={<RegistrarEmpresa />} />
+              <Route path="/registrar-cliente" element={<RegistrarCliente />} />
               <Route path="/perfil" element={<VistaPerfil />} />
             </Route>
           </Route>

@@ -7,6 +7,7 @@ const AuthContext = createContext()
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
+  const [isLoading, setIsLoading] = useState(true)
 
   // Cargar desde localStorage al montar
   useEffect(() => {
@@ -23,8 +24,10 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('token')
       }
     }
+    setIsLoading(false)
   }, [])
 
+  // Login
   const login = (userData, authToken) => {
     setUser(userData)
     setToken(authToken)
@@ -32,6 +35,7 @@ export function AuthProvider({ children }) {
     localStorage.setItem('token', authToken)
   }
 
+  // Logout
   const logout = () => {
     setUser(null)
     setToken(null)
@@ -42,7 +46,7 @@ export function AuthProvider({ children }) {
   const isAuthenticated = !!token && !!user
 
   return (
-    <AuthContext.Provider value={{ user, token, isAuthenticated, login, logout }}>
+    <AuthContext.Provider value={{ user, token, isAuthenticated, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   )

@@ -1,3 +1,5 @@
+// Sidebar para enrutar.
+
 import { NavLink, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';  // ← importa el contexto
 
@@ -60,11 +62,11 @@ export default function Sidebar() {
 
         <li className="nav-item">
           <NavLink 
-            to="/registrar-empresa" 
+            to="/registrar-cliente" 
             className={({ isActive }) => `nav-link text-white ${isActive ? 'active bg-white text-primary' : ''}`}
           >
             <i className="bi bi-building-add me-2"></i>  {/* Cambié icono a uno más adecuado */}
-            Registrar empresa
+            Registrar cliente
           </NavLink>
         </li>
       </ul>

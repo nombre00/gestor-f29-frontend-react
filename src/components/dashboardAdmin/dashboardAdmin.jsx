@@ -5,6 +5,9 @@
 import { useState } from 'react';
 // Módulos.
 import AdministrarUsuarios from './administrarUsuarios';
+import AdministrarClientes from './administrarClientes';
+
+
 
 export default function DashboardAdmin() {
   const [tabActiva, setTabActiva] = useState('usuarios');
@@ -58,11 +61,9 @@ export default function DashboardAdmin() {
               <button
                 className={`nav-link ${tabActiva === 'clientes' ? 'active' : ''}`}
                 onClick={() => setTabActiva('clientes')}
-                disabled
               >
                 <i className="bi bi-briefcase-fill me-2"></i>
                 Clientes
-                <span className="badge bg-secondary ms-2">Próximamente</span>
               </button>
             </li>
             <li className="nav-item">
@@ -93,12 +94,7 @@ export default function DashboardAdmin() {
       {/* Contenido de las pestañas */}
       <div className="container-fluid">
         {tabActiva === 'usuarios' && <AdministrarUsuarios />}
-        {tabActiva === 'clientes' && (
-          <div className="text-center py-5 text-muted">
-            <i className="bi bi-briefcase fs-1"></i>
-            <p className="mt-3">Gestión de clientes - Próximamente</p>
-          </div>
-        )}
+        {tabActiva === 'clientes' && <AdministrarClientes/>}
         {tabActiva === 'resumenes' && (
           <div className="text-center py-5 text-muted">
             <i className="bi bi-file-earmark-text fs-1"></i>
