@@ -6,22 +6,19 @@
 // Este componente solo maneja estado y lógica.
 // La presentación está delegada en ModalFormCliente y ModalReasignar.
 
+
+// Bibliotecas.
 import { useState, useEffect, useCallback } from 'react';
-import {
-  obtenerClientes,
-  crearCliente,
-  actualizarCliente,
-  desactivarCliente,
-  reasignarCliente,
-} from '../../services/clienteService';
+// Módulos.
+import { obtenerUsuarios } from '../../services/usuariosService';
+import { obtenerClientes, crearCliente, actualizarCliente, desactivarCliente, reasignarCliente, } from '../../services/clienteService';
 import { obtenerDashboardContador } from '../../services/resumenesService';
 import ModalFormCliente from './ModalFormCliente';
 import ModalReasignar   from './ModalReasignar';
 import api from '../../api/api';
 
 
-// ── Sub-componentes de presentación local ────────────────────────────────────
-
+// Sub-componentes de presentación local.
 const BadgeF29 = ({ clienteId, idsConF29 }) =>
   idsConF29.has(clienteId)
     ? <span className="badge bg-success"><i className="bi bi-check-circle-fill me-1"></i>Hecho</span>
@@ -33,42 +30,35 @@ const BadgeEstado = ({ activo }) =>
     : <span className="badge bg-secondary-subtle text-secondary border border-secondary-subtle">Inactivo</span>;
 
 
-// ── Componente principal ──────────────────────────────────────────────────────
-
+// Componente principal.
 export default function AdministrarClientes() {
-  const [clientes,   setClientes]   = useState([]);
-  const [contadores, setContadores] = useState([]);
-  const [idsConF29,  setIdsConF29]  = useState(new Set());
-  const [loading,    setLoading]    = useState(false);
-  const [error,      setError]      = useState('');
+  // Hooks
+  const [clientes,   setClientes]   = useState([]);  // Lista de clientes.
+  const [contadores, setContadores] = useState([]);  // Usuarios rol contador.
+  const [idsConF29,  setIdsConF29]  = useState(new Set());  // clientes con f29 hechos este mes.
+  const [loading,    setLoading]    = useState(false);  // controla spinners y desabilita botones.
+  const [error,      setError]      = useState('');  // mensaje de error que se muestra en pantalla.
 
-  // null | 'crear' | objeto cliente → controla ModalFormCliente.
-  const [modalForm,      setModalForm]      = useState(null);
-  // null | objeto cliente → controla ModalReasignar.
-  const [modalReasignar, setModalReasignar] = useState(null);
-  const [modalLoading,   setModalLoading]   = useState(false);
+  const [modalForm,      setModalForm]      = useState(null);  // null = cerrado | 'crear' = modal vacío | objeto cliente = modal de edición.
+  const [modalReasignar, setModalReasignar] = useState(null);  // null = cerrado | objeto cliente = modal de reasignación.
+  const [modalLoading,   setModalLoading]   = useState(false);  // Loading específico para acciones dentro de modales.
 
-  // ── Carga de datos ────────────────────────────────────────────────────────
 
+  // Carga de datos.
   const fetchTodo = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
-      const [dataClientes, dataUsuarios, dataDashboard] = await Promise.all([
-        obtenerClientes(),
-        api.get('/api/usuarios'),
-        obtenerDashboardContador({}),
-      ]);
-
+      // Buscamos los clientes, los usuarios y 
+      const [dataClientes, dataUsuarios, dataDashboard] = await Promise.all([obtenerClientes(), obtenerUsuarios(), obtenerDashboardContador({}),]);
+      // console.log('dataUsuarios:', dataUsuarios);
+      // console.log('dataClientes:', dataClientes);
+      // console.log('dataDashboard:', dataDashboard);
       setClientes(dataClientes.clientes ?? []);
 
-      setContadores(
-        (dataUsuarios.data.usuarios ?? []).filter(u => u.rol === 'contador' && u.activo)
-      );
+      setContadores((dataUsuarios.usuarios ?? []).filter(u => u.rol === 'contador' && u.activo));
 
-      setIdsConF29(
-        new Set((dataDashboard.resumenes_hechos ?? []).map(r => r.cliente_id))
-      );
+      setIdsConF29(new Set((dataDashboard.resumenes_hechos ?? []).map(r => r.cliente_id)));
     } catch (err) {
       setError(err.response?.data?.detail || err.message || 'Error al cargar datos');
     } finally {
@@ -78,8 +68,8 @@ export default function AdministrarClientes() {
 
   useEffect(() => { fetchTodo(); }, [fetchTodo]);
 
-  // ── Acciones ──────────────────────────────────────────────────────────────
 
+  // Acciones.
   const handleGuardar = async (payload) => {
     setModalLoading(true);
     try {
