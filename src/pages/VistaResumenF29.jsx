@@ -12,7 +12,7 @@ import SeccionCreditosCompras from '../components/paginaVistaResumen/SeccionCred
 import SeccionRetencionesTotal from '../components/paginaVistaResumen/SeccionRetencionesTotal';
 // Services
 import { recalcularResumen } from '../services/F29Calculator';
-import { exportarResumenAExcel } from '../services/VistaResumenF29Service';
+import { exportarResumenAExcel2 } from '../services/VistaResumenF29Service';
 
 
 export default function ResumenF29() {
@@ -23,6 +23,7 @@ export default function ResumenF29() {
   const [resumen, setResumen] = useState(null);  // Resumen.
   const [loading, setLoading] = useState(false);  // Estado de carga para el spiner de espera.
   const [error, setError] = useState('');  // Error.
+  const id_bd = location.state?.id_bd;  // estado para la persistencia.
 
   // Función que se carga al cargar la página, hace una copia, no puntero, del resumen y trabajamos con eso.
   useEffect(() => {
@@ -100,7 +101,7 @@ export default function ResumenF29() {
     setLoading(true);  // CAmbiamos el estado a cargar, activa el spiner.
     setError('');
     try {
-      await exportarResumenAExcel(resumen);  // LLamamos asíncronamente a la función del servicio que llama al backend.
+      await exportarResumenAExcel2(resumen, id_bd);  // LLamamos asíncronamente a la función del servicio que llama al backend.
       alert('Excel generado y descargado correctamente');
     } catch (err) {
       setError(err.message || 'Error al exportar el resumen');

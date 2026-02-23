@@ -243,7 +243,7 @@ export default function DashboardContador({ usuario }) {
                       {/* Razón Social */}
                       <td>
                         <i className="bi bi-building me-2 text-primary"></i>
-                        <span className="fw-semibold">{fila.razon_social}</span>
+                        <span className="fw-semibold">{fila.nombre || fila.razon_social}</span>
                       </td>
 
                       {/* RUT */}

@@ -32,9 +32,8 @@ export const obtenerClientes = async () => {
   return response.data;   // { clientes: [], total: number }
 };
 
-/**
- * Obtiene un cliente por ID.
- */
+
+// Obtiene un cliente por ID.
 export const obtenerCliente = async (clienteId) => {
   const response = await api.get(`/api/clientes/${clienteId}`);
   return response.data;

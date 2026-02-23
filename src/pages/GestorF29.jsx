@@ -1,6 +1,5 @@
 // Página donde se ingresan los datos y se procesan.
 
-
 // Bibliotecas.
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -79,16 +78,16 @@ export default function GestorF29() {
 
       {error && <div className="alert alert-danger mb-4">{error}</div>}
 
-      {/** Componentes para seleccionar los archivos. */}
+      {/* Componentes para seleccionar los archivos. */}
       <FileSelector label="Detalle de Ventas" onFileChange={handleFileSelect('archivo_ventas')} />
       <FileSelector label="Detalle de Compras" onFileChange={handleFileSelect('archivo_compras')} />
       <FileSelector label="Libro de Remuneraciones" onFileChange={handleFileSelect('archivo_remuneraciones')} />
       <FileSelector label="Registro de Honorarios" onFileChange={handleFileSelect('archivo_honorarios')} />
 
-      {/** componente para ingresar el remanente. */}
+      {/* componente para ingresar el remanente. */}
       <NumberInput label="Remanente mes anterior" value={remanente} onChange={setRemanente} />
 
-      {/** Botón para mostrar el componente para ingresar las importaciones. */}
+      {/* Botón para mostrar el componente para ingresar las importaciones. */}
       <button 
         className="btn btn-outline-info mt-3 mb-3"
         onClick={() => setShowImportaciones(!showImportaciones)}
@@ -103,7 +102,7 @@ export default function GestorF29() {
         </div>
       )}
 
-      {/** Sección de los botones: generar, generar y ver y volver. */}
+      {/* Sección de los botones: generar, generar y ver y volver. */}
       <div className="d-flex gap-3 justify-content-center">
         <button className="btn btn-success btn-lg" onClick={handleGenerar} disabled={!isReady || loading}>
           Generar Resumen F29

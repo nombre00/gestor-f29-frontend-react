@@ -11,8 +11,6 @@ import api from '../api/api'
  * @param {Object} params.importaciones
  * @returns {Promise<Object>} Resumen F29
  */
-
-
 export const procesarYObtenerResumen = async ({ files, remanente, importaciones }) => {
   const formData = new FormData()
 
@@ -44,6 +42,9 @@ export const procesarYObtenerResumen = async ({ files, remanente, importaciones 
     throw error
   }
 }
+
+
+
 
 /**
  * Genera y descarga el Excel directamente (sin guardar en disco, ya que es frontend)
@@ -84,3 +85,42 @@ export const generarYDescargarExcel = async ({ files, remanente, importaciones }
     throw error
   }
 }
+
+
+
+
+
+
+/////// persistencia ///////
+export const procesarYObtenerResumen2 = async (formData) => {
+  try {
+    const response = await api.post('/api/f29/procesar', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+    return response.data; // ahora devuelve {resumen, id_bd, ...}
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const generarYDescargarExcel2 = async (formData) => {
+  try {
+    const response = await api.post('/api/f29/generar-excel', formData, {
+      responseType: 'blob',
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', response.headers['content-disposition']?.match(/filename="(.+)"/)?.[1] || 'resumen_f29.xlsx');
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+
+    return true;
+  } catch (error) {
+    throw error;
+  }
+};
