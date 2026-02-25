@@ -3,21 +3,18 @@
 
 // Bibliotecas.
 import { useState } from 'react';
+// Contexto.
+import { useAuth } from '../../context/AuthContext';
 // Módulos.
 import AdministrarUsuarios from './administrarUsuarios';
 import AdministrarClientes from './administrarClientes';
+import DashboardContador from '../dashboardContador/dashboardContador';
 
 
 
 export default function DashboardAdmin() {
   const [tabActiva, setTabActiva] = useState('usuarios');
-
-  // Datos del usuario logueado (normalmente vendrían del contexto/auth)
-  const usuario = {
-    nombre: 'Admin',
-    rol: 'admin',
-    empresa: 'Estudio Contable ABC'
-  };
+  const { user } = useAuth();  // Usuario logueado desde el contexto.
 
   return (
     <div className="min-vh-100 bg-light">
@@ -31,11 +28,11 @@ export default function DashboardAdmin() {
           <div className="d-flex align-items-center text-white">
             <span className="me-3">
               <i className="bi bi-building me-1"></i>
-              {usuario.empresa}
+              {user?.empresa || ''}
             </span>
             <span className="me-3">
               <i className="bi bi-person-circle me-1"></i>
-              {usuario.nombre}
+              {user?.nombre || ''}
             </span>
             <button className="btn btn-outline-light btn-sm">
               <i className="bi bi-box-arrow-right me-1"></i>
@@ -44,6 +41,7 @@ export default function DashboardAdmin() {
           </div>
         </div>
       </nav>
+
       {/* Pestañas de navegación */}
       <div className="bg-white shadow-sm">
         <div className="container-fluid">
@@ -68,13 +66,11 @@ export default function DashboardAdmin() {
             </li>
             <li className="nav-item">
               <button
-                className={`nav-link ${tabActiva === 'resumenes' ? 'active' : ''}`}
-                onClick={() => setTabActiva('resumenes')}
-                disabled
+                className={`nav-link ${tabActiva === 'f29' ? 'active' : ''}`}
+                onClick={() => setTabActiva('f29')}
               >
                 <i className="bi bi-file-earmark-text-fill me-2"></i>
-                Resúmenes
-                <span className="badge bg-secondary ms-2">Próximamente</span>
+                F29
               </button>
             </li>
             <li className="nav-item">
@@ -91,17 +87,13 @@ export default function DashboardAdmin() {
           </ul>
         </div>
       </div>
+
       {/* Contenido de las pestañas */}
       <div className="container-fluid">
-        {tabActiva === 'usuarios' && <AdministrarUsuarios />}
-        {tabActiva === 'clientes' && <AdministrarClientes/>}
-        {tabActiva === 'resumenes' && (
-          <div className="text-center py-5 text-muted">
-            <i className="bi bi-file-earmark-text fs-1"></i>
-            <p className="mt-3">Visualización de resúmenes - Próximamente</p>
-          </div>
-        )}
-        {tabActiva === 'reportes' && (
+        {tabActiva === 'usuarios'  && <AdministrarUsuarios />}
+        {tabActiva === 'clientes'  && <AdministrarClientes />}
+        {tabActiva === 'f29'       && <DashboardContador usuario={user} />}
+        {tabActiva === 'reportes'  && (
           <div className="text-center py-5 text-muted">
             <i className="bi bi-bar-chart fs-1"></i>
             <p className="mt-3">Reportes y estadísticas - Próximamente</p>

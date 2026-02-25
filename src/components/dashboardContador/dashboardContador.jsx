@@ -4,7 +4,12 @@
 // Consume GET /api/resumenes/dashboard → { resumenes_hechos, clientes_pendientes, total_hechos, total_pendientes }
 
 import { useState, useEffect, useCallback } from 'react';
-import { obtenerDashboardContador } from '../../services/resumenesService';
+import { useNavigate } from 'react-router-dom';
+import {
+  obtenerDashboardContador,
+  eliminarResumen,
+  cambiarEstadoResumen,
+} from '../../services/resumenesService';
 
 // Nombres de meses en español.
 const MESES = [
@@ -13,9 +18,17 @@ const MESES = [
 ];
 
 export default function DashboardContador({ usuario }) {
+  const navigate = useNavigate();
+
   const [datos, setDatos]     = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError]     = useState('');
+
+  // Modal de confirmación para borrar.
+  const [confirmBorrar, setConfirmBorrar] = useState(null); // { resumen_id, razon_social }
+
+  // IDs en proceso de cambio de estado (para deshabilitar el botón mientras carga).
+  const [cambiandoEstado, setCambiandoEstado] = useState(new Set());
 
   // Período seleccionado — por defecto el mes actual.
   const hoy = new Date();
@@ -37,6 +50,36 @@ export default function DashboardContador({ usuario }) {
 
   useEffect(() => { fetchDashboard(); }, [fetchDashboard]);
 
+  // ── Borrar resumen ────────────────────────────────────────────────────────
+  const handleBorrar = async (resumen_id) => {
+    try {
+      await eliminarResumen(resumen_id);
+      setConfirmBorrar(null);
+      await fetchDashboard();
+    } catch (err) {
+      setConfirmBorrar(null);
+      setError(err.message || 'Error al eliminar el resumen');
+    }
+  };
+
+  // ── Toggle de estado: borrador ↔ revisado ─────────────────────────────────
+  const handleToggleEstado = async (resumen_id, estado_actual) => {
+    const nuevo_estado = estado_actual === 'borrador' ? 'revisado' : 'borrador';
+    setCambiandoEstado(prev => new Set(prev).add(resumen_id));
+    try {
+      await cambiarEstadoResumen(resumen_id, nuevo_estado);
+      await fetchDashboard();
+    } catch (err) {
+      setError(err.message || 'Error al cambiar el estado');
+    } finally {
+      setCambiandoEstado(prev => {
+        const next = new Set(prev);
+        next.delete(resumen_id);
+        return next;
+      });
+    }
+  };
+
   // ── Tabla unificada: combina hechos + pendientes ordenados alfabéticamente ──
   const filasTabla = datos
     ? [
@@ -45,7 +88,7 @@ export default function DashboardContador({ usuario }) {
           rut:          r.rut_cliente,
           razon_social: r.razon_social_cliente,
           f29_hecho:    true,
-          estado_f29:   r.estado,   // borrador | revisado | enviado | pagado
+          estado_f29:   r.estado,   // borrador | revisado
           resumen_id:   r.id,
         })),
         ...datos.clientes_pendientes.map(c => ({
@@ -66,12 +109,9 @@ export default function DashboardContador({ usuario }) {
         <i className="bi bi-clock-fill me-1"></i>Pendiente
       </span>
     );
-
     const config = {
-      borrador: { cls: 'bg-secondary',       label: 'Borrador' },
-      revisado: { cls: 'bg-info text-dark',  label: 'Revisado' },
-      enviado:  { cls: 'bg-primary',         label: 'Enviado'  },
-      pagado:   { cls: 'bg-success',         label: 'Pagado'   },
+      borrador: { cls: 'bg-secondary', label: 'Borrador' },
+      revisado: { cls: 'bg-info text-dark', label: 'Revisado' },
     };
     const { cls, label } = config[estado] ?? { cls: 'bg-secondary', label: estado };
     return (
@@ -263,13 +303,55 @@ export default function DashboardContador({ usuario }) {
 
                       {/* Acciones */}
                       <td className="text-center">
-                        <a
-                          href={`/gestor?cliente=${fila.id}`}
-                          className="btn btn-sm btn-outline-primary"
-                        >
-                          <i className={`bi ${fila.f29_hecho ? 'bi-eye' : 'bi-file-earmark-plus'} me-1`}></i>
-                          {fila.f29_hecho ? 'Ver F29' : 'Generar F29'}
-                        </a>
+                        {fila.f29_hecho ? (
+                          <div className="d-flex justify-content-center gap-2 flex-wrap">
+
+                            {/* Editar → /resumen con id_bd en state (evita exponer IDs en URL) */}
+                            <button
+                              className="btn btn-sm btn-outline-primary"
+                              title="Editar F29"
+                              onClick={() => navigate('/resumen', { state: { id_bd: fila.resumen_id, cliente_id: fila.id } })}
+                            >
+                              <i className="bi bi-pencil-fill me-1"></i>Editar
+                            </button>
+
+                            {/* Toggle estado: borrador ↔ revisado */}
+                            <button
+                              className={`btn btn-sm ${fila.estado_f29 === 'borrador' ? 'btn-outline-info' : 'btn-outline-secondary'}`}
+                              title={fila.estado_f29 === 'borrador' ? 'Marcar como revisado' : 'Volver a borrador'}
+                              disabled={cambiandoEstado.has(fila.resumen_id)}
+                              onClick={() => handleToggleEstado(fila.resumen_id, fila.estado_f29)}
+                            >
+                              {cambiandoEstado.has(fila.resumen_id)
+                                ? <span className="spinner-border spinner-border-sm" role="status"></span>
+                                : fila.estado_f29 === 'borrador'
+                                  ? <><i className="bi bi-check2-circle me-1"></i>Revisar</>
+                                  : <><i className="bi bi-arrow-counterclockwise me-1"></i>Borrador</>
+                              }
+                            </button>
+
+                            {/* Borrar — solo disponible en estado borrador */}
+                            {fila.estado_f29 === 'borrador' && (
+                              <button
+                                className="btn btn-sm btn-outline-danger"
+                                title="Borrar F29"
+                                onClick={() => setConfirmBorrar({ resumen_id: fila.resumen_id, razon_social: fila.razon_social })}
+                              >
+                                <i className="bi bi-trash-fill me-1"></i>Borrar
+                              </button>
+                            )}
+
+                          </div>
+                        ) : (
+                          /* Generar → /gestor pasando cliente_id en state */
+                          <button
+                            className="btn btn-sm btn-outline-success"
+                            title="Generar F29"
+                            onClick={() => navigate('/gestor', { state: { cliente_id: fila.id } })}
+                          >
+                            <i className="bi bi-file-earmark-plus me-1"></i>Generar F29
+                          </button>
+                        )}
                       </td>
 
                     </tr>
@@ -280,6 +362,51 @@ export default function DashboardContador({ usuario }) {
           )}
         </div>
       </div>
+
+      {/* ── Modal confirmación borrar ─────────────────────────────────── */}
+      {confirmBorrar && (
+        <>
+          <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
+          <div className="modal fade show d-block" style={{ zIndex: 1050 }} tabIndex="-1">
+            <div className="modal-dialog modal-dialog-centered">
+              <div className="modal-content border-0 shadow">
+                <div className="modal-header border-0 pb-0">
+                  <h5 className="modal-title text-danger">
+                    <i className="bi bi-exclamation-triangle-fill me-2"></i>
+                    Confirmar eliminación
+                  </h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    onClick={() => setConfirmBorrar(null)}
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <p className="mb-1">
+                    ¿Estás seguro de que deseas eliminar el F29 de{' '}
+                    <strong>{confirmBorrar.razon_social}</strong>?
+                  </p>
+                  <p className="text-muted small mb-0">Esta acción no se puede deshacer.</p>
+                </div>
+                <div className="modal-footer border-0 pt-0">
+                  <button
+                    className="btn btn-secondary btn-sm"
+                    onClick={() => setConfirmBorrar(null)}
+                  >
+                    Cancelar
+                  </button>
+                  <button
+                    className="btn btn-danger btn-sm"
+                    onClick={() => handleBorrar(confirmBorrar.resumen_id)}
+                  >
+                    <i className="bi bi-trash-fill me-1"></i>Sí, eliminar
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Animación spin para el botón de refresh */}
       <style>{`
