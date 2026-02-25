@@ -3,7 +3,7 @@
 
 import { formatCLP, unformatCLP } from '../../services/F29Calculator';
 
-export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onChange }) { // MODIFICADO: props para edición
+export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onChange }) {
   return (
     <div className="card mb-4 shadow-sm border-info">
       <div className="card-header bg-info text-white">
@@ -27,7 +27,6 @@ export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onCha
                   <td>{det.tipo}</td>
                   <td>{det.desc || ''}</td>
                   <td className="text-end">
-                    {/* NUEVO: input editable */}
                     <input
                       type="text"
                       className="form-control form-control-sm text-end"
@@ -63,7 +62,7 @@ export default function SeccionDebitosVentas({ ventasDetalle, ventasTotal, onCha
               </tr>
               <tr className="table-active fw-bold">
                 <td colSpan="4" className="text-end">TOTAL IVA</td>
-                <td className="text-end">{formatCLP(Math.max(0, ventasTotal.iva || 0))}</td>  {/** Este valor no puede ser menor que 0. */}
+                <td className="text-end">{formatCLP(Math.max(0, ventasTotal.iva || 0))}</td>
               </tr>
             </tbody>
           </table>

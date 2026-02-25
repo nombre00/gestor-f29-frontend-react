@@ -12,19 +12,22 @@ import { obtenerClientes } from '../services/clienteService';
 import api from '../api/api';  // axios
 
 export default function GestorF29() {
+  // Hooks
+  // Para navegar.
   const navigate = useNavigate();
 
   // Estados existentes
-  const [files, setFiles] = useState({});
-  const [remanente, setRemanente] = useState(0);
-  const [importaciones, setImportaciones] = useState({
+  const [files, setFiles] = useState({});  // Receptor de los archivos.
+  const [remanente, setRemanente] = useState(0);  // Receptor del remanente.
+  // Importaciones deprecado.
+  /* const [importaciones, setImportaciones] = useState({  // Diccionario que recibe las importaciones (deprecado).
     cant_giro: 0, monto_giro: 0, iva_giro: 0,
     cant_activo: 0, monto_activo: 0, iva_activo: 0
   });
-  const [showImportaciones, setShowImportaciones] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
-  const [isReady, setIsReady] = useState(false);
+  const [showImportaciones, setShowImportaciones] = useState(false);  // toogle para mostrar importaciones, deprecado */
+  const [loading, setLoading] = useState(false);  // maneja el spinner
+  const [error, setError] = useState('');  // mensaje de error.
+  const [isReady, setIsReady] = useState(false);  // Para habilitar botónes.
 
   // Nuevos estados para cliente y período
   const [clientes, setClientes] = useState([]);               // Lista de clientes desde API
@@ -45,6 +48,11 @@ export default function GestorF29() {
     new Date().getFullYear(),
     new Date().getFullYear() + 1
   ];
+
+  // Nuevos estados para datos extra.
+  const [arriendosPagados, setArriendosPagados] = useState(0);
+  const [gastosGeneralesBoletas, setGastosGeneralesBoletas] = useState(0);
+
 
   // Cargar lista de clientes al montar el componente
   useEffect(() => {
@@ -98,12 +106,17 @@ export default function GestorF29() {
       formData.append('periodo', periodo);
       // formData.append('remanente_anterior', remanente.toString());
       formData.append('remanente_anterior', Number(remanente));
-      formData.append('importaciones', JSON.stringify(importaciones));
+      // Inicio datos nuevos.
+      formData.append('arriendos_pagados', Number(arriendosPagados));
+      formData.append('gastos_generales_boletas', Number(gastosGeneralesBoletas));
+      // Fin datos nuevos.
+      // Importaciones deprecado.
+      /* formData.append('importaciones', JSON.stringify(importaciones));
       // Log para depurar (quítalo después)
         console.log('FormData enviado:');
         for (let [key, value] of formData.entries()) {
         console.log(key, value);
-        }
+        } */
 
       await generarYDescargarExcel2(formData); // ← ajusta el service para aceptar FormData
 
@@ -127,7 +140,12 @@ export default function GestorF29() {
       formData.append('cliente_id', selectedClienteId);
       formData.append('periodo', periodo);
       formData.append('remanente_anterior', remanente.toString());
-      formData.append('importaciones', JSON.stringify(importaciones));
+      // Inicio datos nuevos.
+      formData.append('arriendos_pagados', Number(arriendosPagados));
+      formData.append('gastos_generales_boletas', Number(gastosGeneralesBoletas));
+      // Fin datos nuevos.
+      // Importaciones deprecado.
+      // formData.append('importaciones', JSON.stringify(importaciones));
 
       const data = await procesarYObtenerResumen2(formData); // llamamos al service.
 
@@ -147,10 +165,8 @@ export default function GestorF29() {
   return (
     <div className="container py-5">
       <h1 className="mb-4 text-primary">Cargar Documentos para F29</h1>
-
       {error && <div className="alert alert-danger mb-4">{error}</div>}
-
-      {/* Select de clientes */}
+      {/* Selector de clientes */}
       <div className="mb-4">
         <label className="form-label fw-bold">Cliente</label>
         <select
@@ -172,8 +188,7 @@ export default function GestorF29() {
           </small>
         )}
       </div>
-
-      {/* Selector de período */}
+      {/* Selector de período. */}
       <div className="row mb-4">
         <div className="col-md-6">
           <label className="form-label fw-bold">Mes</label>
@@ -206,30 +221,32 @@ export default function GestorF29() {
           </select>
         </div>
       </div>
-
-      {/* Resto del formulario igual */}
+      {/* Selección de archivos. */}
       <FileSelector label="Detalle de Ventas" onFileChange={handleFileSelect('archivo_ventas')} />
       <FileSelector label="Detalle de Compras" onFileChange={handleFileSelect('archivo_compras')} />
       <FileSelector label="Libro de Remuneraciones" onFileChange={handleFileSelect('archivo_remuneraciones')} />
       <FileSelector label="Registro de Honorarios" onFileChange={handleFileSelect('archivo_honorarios')} />
-
+      {/* ingreso del remanente. */}
       <NumberInput label="Remanente mes anterior" value={remanente} onChange={setRemanente} />
-
-      <button
+      {/* ingreso de datos extra. */}
+      <NumberInput label="Arriendos pagados" value={arriendosPagados} onChange={setArriendosPagados}/>
+      <NumberInput label="Gastos generales (boletas)" value={gastosGeneralesBoletas} onChange={setGastosGeneralesBoletas}/>
+      {/* ingreso de importaciones deprecado */}
+      {/** <button
         className="btn btn-outline-info mt-3 mb-3"
         onClick={() => setShowImportaciones(!showImportaciones)}
         disabled={loading}
       >
         {showImportaciones ? 'Ocultar Importaciones' : 'Incluir Importaciones'}
       </button>
-
       {showImportaciones && (
         <div className="card p-4 mb-4">
           <p>Formulario de importaciones (implementar con radios e inputs)</p>
         </div>
-      )}
-
+      )} */}
+      {/* botones de acciones. */}
       <div className="d-flex gap-3 justify-content-center">
+        {/* botón apra generar + persistir + exportar. */}
         <button
           className="btn btn-success btn-lg"
           onClick={handleGenerar}
@@ -237,7 +254,7 @@ export default function GestorF29() {
         >
           Generar Resumen F29
         </button>
-
+        {/* botón para generar + persistir + enrutar a previsualización. */}
         <button
           className="btn btn-primary btn-lg"
           onClick={handleGenerarYVer}
@@ -245,7 +262,7 @@ export default function GestorF29() {
         >
           Generar y Ver Resumen F29
         </button>
-
+        {/* botón para volver al inicio. */}
         <button
           className="btn btn-secondary btn-lg"
           onClick={handleVolver}

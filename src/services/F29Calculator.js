@@ -11,6 +11,8 @@ export const unformatCLP = (value) => {
   return parseInt(value.replace(/\./g, '').replace(/[^0-9]/g, '')) || 0;
 };
 
+
+
 // Recalcula todos los totales y actualiza el objeto resumen
 export const recalcularResumen = (resumen) => {
   // 1. Ventas
@@ -63,18 +65,48 @@ export const recalcularResumen = (resumen) => {
   resumen.remanente = iva_neto_ajustado > 0 ? 0 : -iva_neto_ajustado
 
   // 4. Remuneraciones y PPM (asumiendo que se editan directamente en el objeto)
-  // Puedes agregar aquí más lógica si hay dependencias
+  // Preservamos y validamos que no sean negativos
+  resumen.remuneraciones = {
+    ...resumen.remuneraciones,
+    th_remuneraciones: Math.max(0, Number(resumen.remuneraciones?.th_remuneraciones || 0)),
+    impt_unico: Math.max(0, Number(resumen.remuneraciones?.impt_unico || 0)),
+    base_rem_3porc: Math.max(0, Number(resumen.remuneraciones?.base_rem_3porc || 0)),
+    rem_3porc: Math.max(0, Number(resumen.remuneraciones?.rem_3porc || 0)),
+  };
+
+  resumen.honorarios = {
+    ...resumen.honorarios,
+    honorarios: Math.max(0, Number(resumen.honorarios?.honorarios || 0)),
+    retencion: Math.max(0, Number(resumen.honorarios?.retencion || 0)),
+    cod155: Math.max(0, Number(resumen.honorarios?.cod155 || 0)),
+  };
+
+  resumen.ppm = {
+    ...resumen.ppm,
+    base: Math.max(0, Number(resumen.ppm?.base || 0)),
+    tasa: Number(resumen.ppm?.tasa || 0.2),  // Respeta edición o usa 0.2
+    ppm: Math.round(
+      (Number(resumen.ppm?.base || 0) * (Number(resumen.ppm?.tasa || 0.2))) / 100
+    ),
+    PPM2_base: Math.max(0, Number(resumen.ppm?.PPM2_base || 0)),
+    PPM2_valor: Math.max(0, Number(resumen.ppm?.PPM2_valor || 0)),
+    PPM_transportista_base: Math.max(0, Number(resumen.ppm?.PPM_transportista_base || 0)),
+    PPM_transportista_valor: Math.max(0, Number(resumen.ppm?.PPM_transportista_valor || 0)),
+  };
 
   // 5. Total a pagar (TT)
   resumen.TT =
     resumen.IVAPP +
     (resumen.remuneraciones?.impt_unico || 0) +
-    (resumen.remuneraciones?.retencion || 0) +
     (resumen.remuneraciones?.rem_3porc || 0) +
     (resumen.honorarios?.cod155 || 0) +
     (resumen.ppm?.ppm || 0) +
     (resumen.ppm?.PPM2_valor || 0) +
-    (resumen.ppm?.PPM_transportista_valor || 0)
+    (resumen.ppm?.PPM_transportista_valor || 0);
+
+  // 6. Datos extra → se preservan tal cual
+  resumen.arriendos_pagados = Number(resumen.arriendos_pagados || 0);
+  resumen.gastos_generales_boletas = Number(resumen.gastos_generales_boletas || 0);
 
   return resumen
 }

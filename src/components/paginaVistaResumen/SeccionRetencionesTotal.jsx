@@ -113,26 +113,47 @@ export default function SeccionRetencionesTotal({
 
               {/* PPM 1° Categoría */}
               <tr>
-                <td>PPM 1° Categoría</td>
-                <td className="text-end">
-                  <input
-                    type="text"
-                    className="form-control form-control-sm text-end"
-                    value={formatCLP(ppm.base || 0)}
-                    onChange={(e) => onPpmChange('base', unformatCLP(e.target.value))}
-                    onBlur={(e) => (e.target.value = formatCLP(unformatCLP(e.target.value)))}
-                  />
-                </td>
-                <td className="text-end">
-                  <input
-                    type="text"
-                    className="form-control form-control-sm text-end"
-                    value={formatCLP(ppm.ppm || 0)}
-                    onChange={(e) => onPpmChange('ppm', unformatCLP(e.target.value))}
-                    onBlur={(e) => (e.target.value = formatCLP(unformatCLP(e.target.value)))}
-                  />
-                </td>
-              </tr>
+              <td>PPM 1° Categoría</td>
+              <td className="text-end">
+                <input
+                  type="text"
+                  className="form-control form-control-sm text-end"
+                  value={formatCLP(ppm.base || 0)}
+                  onChange={(e) => onPpmChange('base', unformatCLP(e.target.value))}
+                  onBlur={(e) => (e.target.value = formatCLP(unformatCLP(e.target.value)))}
+                />
+              </td>
+              <td className="text-end">
+                <div className="d-flex align-items-center justify-content-between w-100">
+                  {/* Tasa - a la izquierda */}
+                  <div className="input-group input-group-sm" style={{ width: '110px' }}>
+                    <input
+                      type="text"
+                      className="form-control text-end"
+                      value={ppm.tasa ?? ''}  // ← permite vacío mientras se escribe
+                      placeholder="0.2"
+                      onChange={(e) => {
+                        // Solo limpiamos caracteres inválidos, no convertimos aún
+                        const raw = e.target.value.replace(/[^0-9.]/g, '');
+                        onPpmChange('tasa', raw);  // ← guardamos string temporal
+                      }}
+                      onBlur={(e) => {
+                        let val = parseFloat(e.target.value);
+                        if (isNaN(val) || val < 0) val = 0.2;  // Default si vacío o inválido
+                        onPpmChange('tasa', val);
+                        e.target.value = val.toFixed(2);  // Muestra siempre 2 decimales
+                      }}
+                    />
+                    <span className="input-group-text">%</span>
+                  </div>
+
+                  {/* Valor calculado */}
+                  <span className="fw-bold text-primary ms-auto">
+                    {formatCLP(ppm.ppm || 0)}
+                  </span>
+                </div>
+              </td>
+            </tr>
 
               {/* PPM segunda categoría */}
               <tr>

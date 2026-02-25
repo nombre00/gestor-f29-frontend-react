@@ -10,6 +10,7 @@ import SeccionContribuyente from '../components/paginaVistaResumen/SeccionContri
 import SeccionDebitosVentas from '../components/paginaVistaResumen/SeccionDebitosVentas';
 import SeccionCreditosCompras from '../components/paginaVistaResumen/SeccionCreditosCompras';
 import SeccionRetencionesTotal from '../components/paginaVistaResumen/SeccionRetencionesTotal';
+import NumberInput from '../components/NumberInput';
 // Services
 import { recalcularResumen } from '../services/F29Calculator';
 import { exportarResumenAExcel2 } from '../services/VistaResumenF29Service';
@@ -125,64 +126,83 @@ export default function ResumenF29() {
   }
 
   return (
-    <div className="container py-5 position-relative">  {/** Contenedor del componente. */}
-      <h1 className="mb-5 text-primary text-center">Resumen Formulario 29</h1>  {/** Título. */}
-
-      {error && <div className="alert alert-danger mb-4">{error}</div>}  {/** Si el error está vacio continúa, sino puestra una alerta. */}
-
-      {/** Secciones de la página. */}
+    <div className="container py-5 position-relative">
+      <h1 className="mb-5 text-primary text-center">Resumen Formulario 29</h1>
+      {error && <div className="alert alert-danger mb-4">{error}</div>}
       <SeccionContribuyente resumen={resumen} />
-
       <SeccionDebitosVentas 
         ventasDetalle={resumen.ventas_detalle} 
         ventasTotal={resumen.ventas_total} 
-        onChange={handleVentaChange}  // Le pasamos la función escuchadora.
+        onChange={handleVentaChange}
       />
-
       <SeccionCreditosCompras 
         comprasDetalle={resumen.compras_detalle} 
         comprasTotal={resumen.compras_total} 
         IVAPP={resumen.IVAPP} 
         remanente={resumen.remanente} 
-        onChange={handleCompraChange}  // Le pasamos la función escuchadora.
+        onChange={handleCompraChange}
       />
-
       <SeccionRetencionesTotal 
         remuneraciones={resumen.remuneraciones || {}} 
         honorarios={resumen.honorarios || {}} 
         ppm={resumen.ppm || {}} 
         TT={resumen.TT || 0} 
-        onRemChange={handleRemChange}  // Le pasamos la función escuchadora.
-        onHonChange={handleHonChange}  // Le pasamos la función escuchadora.
-        onPpmChange={handlePpmChange}  // Le pasamos la función escuchadora.
+        onRemChange={handleRemChange}
+        onHonChange={handleHonChange}
+        onPpmChange={handlePpmChange}
       />
-
+      <div className="card mb-4 shadow-sm border-secondary">
+        <div className="card-header bg-secondary text-white">
+          <h5 className="mb-0">Datos adicionales (no afectan F29)</h5>
+        </div>
+        <div className="card-body">
+          <div className="row g-4">
+            <div className="col-md-6">
+              <label className="form-label fw-bold">Arriendos pagados</label>
+              <NumberInput
+                value={resumen.arriendos_pagados || 0}
+                onChange={(val) => setResumen(prev => ({
+                  ...prev,
+                  arriendos_pagados: val
+                }))}
+              />
+            </div>
+            <div className="col-md-6">
+              <label className="form-label fw-bold">Gastos generales (boletas)</label>
+              <NumberInput
+                value={resumen.gastos_generales_boletas || 0}
+                onChange={(val) => setResumen(prev => ({
+                  ...prev,
+                  gastos_generales_boletas: val
+                }))}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="d-flex gap-4 justify-content-center mt-5">
-        <button // Botón para aplicar los cambios de la previsualización al resumen en memoria.
+        <button
           className="btn btn-primary btn-lg px-5" 
-          onClick={handleApplyChanges}  // Función escuchadora.
+          onClick={handleApplyChanges}
           disabled={loading}
         >
           {loading ? 'Aplicando...' : 'Aplicar Cambios'}
         </button>
-
-        <button  // Botón para exportar.
+        <button
           className="btn btn-success btn-lg px-5" 
           onClick={handleExport}
           disabled={loading}
         >
           {loading ? 'Generando...' : 'Exportar a Excel'}
         </button>
-
-        <button  // Botón para volver.
+        <button
           className="btn btn-outline-secondary btn-lg px-5" 
-          onClick={() => navigate('/gestor')}  // Funcion escuchadora.
+          onClick={() => navigate('/gestor')}
         >
           Volver
         </button>
       </div>
-
-      {loading && (  // Componente spinner, puede ser reemplazado por el componente reutilizable.
+      {loading && (
         <div 
           className="position-fixed top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-dark bg-opacity-50"
           style={{ zIndex: 9999 }}

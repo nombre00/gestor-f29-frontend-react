@@ -224,7 +224,7 @@ export default function DashboardContador({ usuario }) {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th>Razón Social</th>
+                    <th>Nombre</th>
                     <th>RUT</th>
                     <th className="text-center">F29 — {MESES[mesSel]} {anioSel}</th>
                     <th className="text-center">

@@ -1,5 +1,7 @@
 // Página donde se ingresan los datos y se procesan.
 
+// Deprecado, pronto lo voy a borrar.
+
 // Bibliotecas.
 import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
