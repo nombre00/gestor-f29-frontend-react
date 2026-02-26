@@ -42,3 +42,37 @@ export const obtenerResumenPorId = async (resumenId) => {
   const response = await api.get(`/api/resumenes/${resumenId}`);
   return response.data;
 };
+
+
+
+
+
+
+
+////// funciones de resumenAnual ///////
+export const obtenerDashboardResumenAnual = async (anio) => {
+  const response = await api.get('/api/f29/resumenes/anual/dashboard', { params: { anio } });
+  return response.data;
+};
+
+/**
+ * Obtiene (o crea vacío) el resumen anual de un cliente para un año específico.
+ * GET /api/f29/resumen-anual/{cliente_id}/{año}
+ * @param {number} clienteId - ID del cliente
+ * @param {string} año - Año en formato YYYY (ej: "2025")
+ */
+export const obtenerResumenAnual = async (clienteId, año) => {
+  const response = await api.get(`/api/f29/resumen-anual/${clienteId}/${año}`);
+  return response.data;
+};
+
+/**
+ * Recalcula/actualiza el resumen anual sumando todos los F29 existentes del año.
+ * POST /api/f29/resumen-anual/{cliente_id}/{año}/recalcular
+ * @param {number} clienteId - ID del cliente
+ * @param {string} año - Año en formato YYYY (ej: "2025")
+ */
+export const recalcularResumenAnual = async (clienteId, año) => {
+  const response = await api.post(`/api/f29/resumen-anual/${clienteId}/${año}/recalcular`);
+  return response.data;
+};

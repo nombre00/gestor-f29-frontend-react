@@ -13,7 +13,8 @@ import RegistrarCliente from './pages/RegistrarCliente'
 import VistaInicio from './pages/Inicio'
 import GestorF29 from './pages/GestorF292'
 import VistaResumenF29 from './pages/VistaResumenF29'
-import VistaResumenAnual from './pages/GestorResumenAnual'
+import VistaResumenAnual from './pages/ResumenAnualPrevisualizar'
+import GestorResumenAnual from './pages/GestorResumenAnual'
 import VistaRegistro from './pages/RegistroUsuario'
 import VistaPerfil from './pages/Perfil'
 // Componentes.
@@ -36,6 +37,7 @@ function App() {
               <Route path="/gestor" element={<GestorF29 />} />
               <Route path="/resumen" element={<VistaResumenF29 />} />
               <Route path="/resumen-anual" element={<VistaResumenAnual />} />
+              <Route path="/gestor-resumen-anual" element={<GestorResumenAnual />} />
               <Route path="/registrar-cliente" element={<RegistrarCliente />} />
               <Route path="/perfil" element={<VistaPerfil />} />
             </Route>
