@@ -52,7 +52,7 @@ export default function Sidebar() {
 
         <li className="nav-item">
           <NavLink 
-            to="/resumen-anual"
+            to="/gestor-resumen-anual"
             className={({ isActive }) => `nav-link text-white ${isActive ? 'active bg-white text-primary' : ''}`}
           >
             <i className="bi bi-graph-up-arrow me-2"></i>

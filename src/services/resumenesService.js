@@ -51,7 +51,7 @@ export const obtenerResumenPorId = async (resumenId) => {
 
 ////// funciones de resumenAnual ///////
 export const obtenerDashboardResumenAnual = async (anio) => {
-  const response = await api.get('/api/f29/resumenes/anual/dashboard', { params: { anio } });
+  const response = await api.get('/api/f29/resumen-anual/dashboard', { params: { anio } });
   return response.data;
 };
 

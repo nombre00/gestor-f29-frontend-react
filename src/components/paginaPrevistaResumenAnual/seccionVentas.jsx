@@ -1,4 +1,4 @@
-// components/paginaVistaResumen/SeccionDebitosVentasReadOnly.jsx
+
 import { formatCLP } from '../../services/F29Calculator';
 
 export default function SeccionVentas({ ventasDetalle, ventasTotal }) {

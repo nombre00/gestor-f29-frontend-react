@@ -1,4 +1,4 @@
-// components/paginaVistaResumen/SeccionRetencionesTotalReadOnly.jsx
+
 import { formatCLP } from '../../services/F29Calculator';
 
 export default function SeccionRetencionesTotal({

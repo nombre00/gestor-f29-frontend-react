@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router-dom';
 
 // Servicio (ya lo tienes en resumenesService.js)
 import { obtenerDashboardResumenAnual } from '../services/resumenesService';
+import { useAuth } from '../context/AuthContext';
 
 // Años disponibles (últimos 5 + próximo)  usuario.nombre
 const ANIOS = (() => {
@@ -133,7 +134,7 @@ export default function GestorResumenAnual() {
           },
           {
             valor: datos ? datos.total_generados || 0 : '—',
-            label: 'Resúmenes generados',
+            label: 'Resúmenes anuales generados',
             icono: 'bi-check-circle-fill',
             color: 'text-success',
           },

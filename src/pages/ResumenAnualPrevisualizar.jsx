@@ -1,26 +1,24 @@
-// Acá el usuario genera los resúmenes anuales.
+// Acá el usuario ve los resúmenes anuales generados.
 
 
-// pages/GestorResumenAnual.jsx
-
+// Bibliotecas.
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-
 // Componentes reutilizados (solo lectura → quitamos onChange)
-import SeccionContribuyente from '../components/paginaGestorResumenAnual/seccionContribuyente';
-import SeccionVentas from '../components/paginaGestorResumenAnual/seccionVentas';
-import SeccionCompras from '../components/paginaGestorResumenAnual/seccionCompras';
-import SeccionRetencionesTotal from '../components/paginaGestorResumenAnual/seccionRetencionesTotal';
-
+import SeccionContribuyente from '../components/paginaPrevistaResumenAnual/seccionContribuyente';
+import SeccionVentas from '../components/paginaPrevistaResumenAnual/seccionVentas';
+import SeccionCompras from '../components/paginaPrevistaResumenAnual/seccionCompras';
+import SeccionRetencionesTotal from '../components/paginaPrevistaResumenAnual/seccionRetencionesTotal';
 // Servicios (ajusta los nombres según tu estructura real)
 import { obtenerResumenAnual, recalcularResumenAnual } from '../services/resumenesService';
 import { exportarResumenAExcel2 } from '../services/VistaResumenF29Service'; // reutilizamos el mismo exportador
-
-// Utilidad de formato (ya la tienes)
+// Utilidad de formato (ya la tienes) año
 import { formatCLP } from '../services/F29Calculator';
 
+
+// Hooks.
 export default function VistaResumenAnual() {
-  const { clienteId, año } = useParams(); // /gestor-resumen-anual/:clienteId/:año
+  const { clienteId, anio } = useParams(); // /resumen-anual-previsualizar/:clienteId/:anio
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -35,7 +33,7 @@ export default function VistaResumenAnual() {
       setLoading(true);
       setError('');
       try {
-        const data = await obtenerResumenAnual(clienteId, año);
+        const data = await obtenerResumenAnual(clienteId, anio);
         setResumenData(data);
       } catch (err) {
         setError(err.message || 'No se pudo cargar el resumen anual');
@@ -45,14 +43,14 @@ export default function VistaResumenAnual() {
     };
 
     fetchResumen();
-  }, [clienteId, año]);
+  }, [clienteId, anio]);
 
   // Handler de recalcular
   const handleRecalcular = async () => {
     setLoadingAction(true);
     setError('');
     try {
-      const updated = await recalcularResumenAnual(clienteId, año);
+      const updated = await recalcularResumenAnual(clienteId, anio);
       setResumenData(updated);
       alert('Resumen recalculado correctamente');
     } catch (err) {
@@ -79,7 +77,6 @@ export default function VistaResumenAnual() {
   // Genera los 12 badges
   const renderBadgesMeses = () => {
     if (!resumenData) return null;
-
     const meses = [
       'Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
       'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'
@@ -142,7 +139,7 @@ export default function VistaResumenAnual() {
       <div className="card mb-5 shadow border-primary">
         <div className="card-header bg-primary text-white">
           <h5 className="mb-0">
-            {rango_texto || `Año ${resumenData.año}`}
+            {rango_texto || `Año ${resumenData.anio}`}
           </h5>
         </div>
         <div className="card-body">

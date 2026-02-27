@@ -19,7 +19,7 @@ import VistaRegistro from './pages/RegistroUsuario'
 import VistaPerfil from './pages/Perfil'
 // Componentes.
 import PrivateRoute from './components/privateRoute'
-
+// Lineas comentadas: <Route path="/resumen-anual" element={<VistaResumenAnual />} />
 function App() {
   return (
     <AppProviders>  {/* Contexto */}
@@ -36,7 +36,7 @@ function App() {
               <Route path="/inicio" element={<VistaInicio />} />
               <Route path="/gestor" element={<GestorF29 />} />
               <Route path="/resumen" element={<VistaResumenF29 />} />
-              <Route path="/resumen-anual" element={<VistaResumenAnual />} />
+              <Route path="/resumen-anual-previsualizar/:clienteId/:anio" element={<VistaResumenAnual />} />
               <Route path="/gestor-resumen-anual" element={<GestorResumenAnual />} />
               <Route path="/registrar-cliente" element={<RegistrarCliente />} />
               <Route path="/perfil" element={<VistaPerfil />} />
