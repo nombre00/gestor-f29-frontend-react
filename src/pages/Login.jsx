@@ -12,30 +12,28 @@ import { loginUser } from '../services/LoginService'
 
 export default function Login() {
     // Variables que usa el formulario, recuerda que tambien tenemos errores en cada input.
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const [loading, setLoading] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(false)
 
-    const { login } = useAuth()  // Usa el contexto.
-    const navigate = useNavigate()  // Navegador.
+  const { login } = useAuth()  // Usa el contexto.
+  const navigate = useNavigate()  // Navegador.
 
-    const handleSubmit = async (e) => {  // Función asincrona que intenta la acción.
-        e.preventDefault()
-        setError('')
-        setLoading(true)
-
-    try {
-        // Guardamos en variables el retorno de la función del service.
-        const { user, token } = await loginUser({ email, password })  // Guardamos el usuario.
-        localStorage.setItem('token', token)  // Guardamos el token
-        login(user, token)
-
+  const handleSubmit = async (e) => {  // Función asincrona que intenta la acción.
+        e.preventDefault()  // Evita que se ingresen los valores default.
+        setError('')  // Inicializamos el texto del error.
+        setLoading(true)  // Cambiamos el estado del hook del spinner.
+    try {  // Intentamos:
+      // Guardamos en variables el retorno de la función del service.
+      const { user, token } = await loginUser({ email, password })  // Guardamos el usuario.
+      localStorage.setItem('token', token)  // Guardamos el token
+      login(user, token)  //  Verificamos el token dado usando el contexto de verificación.
       navigate('/inicio')  // Si todo bien navigate nos manda a la página inicio.
-    } catch (err) {
+    } catch (err) {  // Si error:
       setError(err.message || 'Error al conectar con el servidor')
       console.error('Login error:', err)
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del hook del spinner.
       setLoading(false)
     }
   }
@@ -101,15 +99,6 @@ export default function Login() {
               )}
             </button>
           </form>
-
-          {/* Botón para saltar directo a inicio (ideal para desarrollo) */}
-          <div className="text-center mt-4">
-            <Link to="/inicio" className="btn btn-outline-secondary btn-lg w-100">
-              <i className="bi bi-arrow-right-circle me-2"></i>
-              Entrar directamente al Dashboard (solo pruebas)
-            </Link>
-          </div>
-
         </div>
       </div>
     </div>

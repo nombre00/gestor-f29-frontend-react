@@ -46,104 +46,103 @@ export default function AdministrarClientes() {
 
   // Carga de datos.
   const fetchTodo = useCallback(async () => {
-    setLoading(true);
-    setError('');
+    setLoading(true);  // CAmbiamos el estado del hook del spinner.
+    setError('');  // Inicializamos el mensaje de error.
     try {
-      // Buscamos los clientes, los usuarios y 
+      // Buscamos los clientes, los usuarios y f29s.
       const [dataClientes, dataUsuarios, dataDashboard] = await Promise.all([obtenerClientes(), obtenerUsuarios(), obtenerDashboardContador({}),]);
       // console.log('dataUsuarios:', dataUsuarios);
       // console.log('dataClientes:', dataClientes);
-      // console.log('dataDashboard:', dataDashboard);
-      setClientes(dataClientes.clientes ?? []);
+      // console.log('dataDashboard:', dataDashboard); 
+      setClientes(dataClientes.clientes ?? []);  // Asignamos los datos encontrados al hook.
 
-      setContadores((dataUsuarios.usuarios ?? []).filter(u => u.rol === 'contador' && u.activo));
+      setContadores((dataUsuarios.usuarios ?? []))  // Asignamos los datos encontrados al hook.
 
-      setIdsConF29(new Set((dataDashboard.resumenes_hechos ?? []).map(r => r.cliente_id)));
-    } catch (err) {
+      setIdsConF29(new Set((dataDashboard.resumenes_hechos ?? []).map(r => r.cliente_id)));  // Asignamos los datos encontrados al hook.
+    } catch (err) {  // Si error:
       setError(err.response?.data?.detail || err.message || 'Error al cargar datos');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del hook del spinner.
       setLoading(false);
     }
   }, []);
 
+  // Cuando se carga la página cargamos los datos.
   useEffect(() => { fetchTodo(); }, [fetchTodo]);
 
 
   // Acciones.
+  // Funcion guardar.
   const handleGuardar = async (payload) => {
-    setModalLoading(true);
-    try {
+    setModalLoading(true);  // CAmbiamos el estado del hook del spinner.
+    try {  // Si no existe creamos.
       if (modalForm === 'crear') {
-        await crearCliente(payload);
-      } else {
-        await actualizarCliente(modalForm.id, payload);
+        await crearCliente(payload);  // LLamamos al service.
+      } else {  // Si existe actualizamos.
+        await actualizarCliente(modalForm.id, payload);  // LLamamos al service.
       }
-      setModalForm(null);
-      fetchTodo();
-    } catch (err) {
+      setModalForm(null);  // Reiniciamos los datos del formulario
+      fetchTodo();  // Recargamos los datos de la página.
+    } catch (err) {  // Si error:
       alert(err.response?.data?.detail || err.message || 'Error al guardar');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del hook del spinner.
       setModalLoading(false);
     }
   };
 
+  // Función desactivar.
   const handleDesactivar = async (cliente) => {
     if (!confirm(`¿Desactivar a "${cliente.razon_social}"?`)) return;
-    setLoading(true);
+    setLoading(true);  // CAmbiamos el estado del hook del spinner.
     try {
-      await desactivarCliente(cliente.id);
-      fetchTodo();
-    } catch (err) {
+      await desactivarCliente(cliente.id);  // LLamamos al service.
+      fetchTodo();  // Recargamos los datos de la página.
+    } catch (err) {  // Si error:
       alert(err.response?.data?.detail || err.message || 'Error al desactivar');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del hook del spinner.
       setLoading(false);
     }
   };
 
+  // Función reasignar.
   const handleReasignar = async (nuevoUsuarioId) => {
-    setModalLoading(true);
+    setModalLoading(true);  // CAmbiamos el estado del hook del spinner.
     try {
-      await reasignarCliente(modalReasignar.id, nuevoUsuarioId);
-      setModalReasignar(null);
-      fetchTodo();
-    } catch (err) {
+      await reasignarCliente(modalReasignar.id, nuevoUsuarioId);  // LLamamos al service.
+      setModalReasignar(null);  // Reiniciamos los datos del formulario
+      fetchTodo();  // Recargamos los datos de la página.
+    } catch (err) {  // Si error:
       alert(err.response?.data?.detail || err.message || 'Error al reasignar');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del hook del spinner.
       setModalLoading(false);
     }
   };
 
-  // ── Helpers ───────────────────────────────────────────────────────────────
 
+  // Funciones auxiliares.
+  // Retorna el nombre del usuario.
   const nombreContador = (id) => {
     const u = contadores.find(c => c.id === id);
     return u ? `${u.nombre} ${u.apellido ?? ''}`.trim() : '—';
   };
 
+  // Hooks
   const activos   = clientes.filter(c => c.activo);
   const inactivos = clientes.filter(c => !c.activo);
 
-  // ── Render ────────────────────────────────────────────────────────────────
-
+  
   return (
     <div className="container-fluid py-4">
-
       {/* Header */}
       <div className="d-flex justify-content-between align-items-center mb-4">
         <h2 className="text-primary mb-0">
           <i className="bi bi-building me-2"></i>
           Gestión de Clientes
         </h2>
-        <button
-          className="btn btn-primary"
-          onClick={() => setModalForm('crear')}
-          disabled={loading}
-        >
+        <button className="btn btn-primary" onClick={() => setModalForm('crear')} disabled={loading}>
           <i className="bi bi-building-add me-2"></i>
           Nuevo Cliente
         </button>
       </div>
-
       {/* Error global */}
       {error && (
         <div className="alert alert-danger alert-dismissible fade show">
@@ -151,8 +150,7 @@ export default function AdministrarClientes() {
           <button className="btn-close" onClick={() => setError('')}></button>
         </div>
       )}
-
-      {/* ── Tabla clientes activos ──────────────────────────────────── */}
+      {/*  Tabla clientes activos  */}
       <div className="card border-0 shadow-sm mb-4">
         <div className="card-header bg-success text-white py-3">
           <h5 className="mb-0">
@@ -205,28 +203,13 @@ export default function AdministrarClientes() {
                       </td>
                       <td className="text-center">
                         <div className="btn-group btn-group-sm">
-                          <button
-                            className="btn btn-outline-primary"
-                            title="Editar"
-                            onClick={() => setModalForm(c)}
-                            disabled={loading}
-                          >
+                          <button className="btn btn-outline-primary" title="Editar" onClick={() => setModalForm(c)} disabled={loading}>
                             <i className="bi bi-pencil-fill"></i>
                           </button>
-                          <button
-                            className="btn btn-outline-warning"
-                            title="Reasignar contador"
-                            onClick={() => setModalReasignar(c)}
-                            disabled={loading}
-                          >
+                          <button className="btn btn-outline-warning" title="Reasignar contador" onClick={() => setModalReasignar(c)} disabled={loading}>
                             <i className="bi bi-arrow-left-right"></i>
                           </button>
-                          <button
-                            className="btn btn-outline-danger"
-                            title="Desactivar"
-                            onClick={() => handleDesactivar(c)}
-                            disabled={loading}
-                          >
+                          <button className="btn btn-outline-danger" title="Desactivar" onClick={() => handleDesactivar(c)} disabled={loading}>
                             <i className="bi bi-x-circle-fill"></i>
                           </button>
                         </div>
@@ -239,8 +222,7 @@ export default function AdministrarClientes() {
           )}
         </div>
       </div>
-
-      {/* ── Tabla clientes inactivos ────────────────────────────────── */}
+      {/*  Tabla clientes inactivos  */}
       {inactivos.length > 0 && (
         <div className="card border-0 shadow-sm">
           <div className="card-header bg-secondary text-white py-3">
@@ -281,8 +263,7 @@ export default function AdministrarClientes() {
           </div>
         </div>
       )}
-
-      {/* ── Modales ─────────────────────────────────────────────────── */}
+      {/*  Modales  */}
       {modalForm !== null && (
         <ModalFormCliente
           cliente={modalForm === 'crear' ? null : modalForm}

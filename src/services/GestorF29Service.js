@@ -69,7 +69,6 @@ export const generarYDescargarExcel = async ({ files, remanente, importaciones }
         'Content-Type': 'multipart/form-data',
       },
     })
-
     // Crear blob y descargar
     const url = window.URL.createObjectURL(new Blob([response.data]))
     const link = document.createElement('a')

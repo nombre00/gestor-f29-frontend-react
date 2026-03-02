@@ -1,4 +1,4 @@
-// Dashboard del admin para manejar el sistema: gestionar usuarios. 
+// Dashboard del admin para manejar el sistema: gestionar usuarios, gestionar clientes y dashboard contador. 
 
 
 // Bibliotecas.
@@ -41,7 +41,6 @@ export default function DashboardAdmin() {
           </div>
         </div>
       </nav>
-
       {/* Pestañas de navegación */}
       <div className="bg-white shadow-sm">
         <div className="container-fluid">
@@ -73,32 +72,14 @@ export default function DashboardAdmin() {
                 F29
               </button>
             </li>
-            <li className="nav-item">
-              <button
-                className={`nav-link ${tabActiva === 'reportes' ? 'active' : ''}`}
-                onClick={() => setTabActiva('reportes')}
-                disabled
-              >
-                <i className="bi bi-bar-chart-fill me-2"></i>
-                Reportes
-                <span className="badge bg-secondary ms-2">Próximamente</span>
-              </button>
-            </li>
           </ul>
         </div>
       </div>
-
       {/* Contenido de las pestañas */}
       <div className="container-fluid">
         {tabActiva === 'usuarios'  && <AdministrarUsuarios />}
         {tabActiva === 'clientes'  && <AdministrarClientes />}
         {tabActiva === 'f29'       && <DashboardContador usuario={user} />}
-        {tabActiva === 'reportes'  && (
-          <div className="text-center py-5 text-muted">
-            <i className="bi bi-bar-chart fs-1"></i>
-            <p className="mt-3">Reportes y estadísticas - Próximamente</p>
-          </div>
-        )}
       </div>
     </div>
   );

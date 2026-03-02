@@ -19,12 +19,6 @@ export default function GestorF29() {
   // Estados existentes
   const [files, setFiles] = useState({});  // Receptor de los archivos.
   const [remanente, setRemanente] = useState(0);  // Receptor del remanente.
-  // Importaciones deprecado.
-  /* const [importaciones, setImportaciones] = useState({  // Diccionario que recibe las importaciones (deprecado).
-    cant_giro: 0, monto_giro: 0, iva_giro: 0,
-    cant_activo: 0, monto_activo: 0, iva_activo: 0
-  });
-  const [showImportaciones, setShowImportaciones] = useState(false);  // toogle para mostrar importaciones, deprecado */
   const [loading, setLoading] = useState(false);  // maneja el spinner
   const [error, setError] = useState('');  // mensaje de error.
   const [isReady, setIsReady] = useState(false);  // Para habilitar botónes.
@@ -41,13 +35,12 @@ export default function GestorF29() {
     'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
   ];
 
-  // Años: pasado (2), actual, próximo (1) → total 4 opciones
-  const anios = [
-    new Date().getFullYear() - 2,
-    new Date().getFullYear() - 1,
-    new Date().getFullYear(),
-    new Date().getFullYear() + 1
-  ];
+  // Rango de años.
+  const hoydia = new Date();
+  const añoActual = hoydia.getFullYear();
+  const añoInicio = 1980;
+  const añoFin = añoActual + 1;
+  const anios = Array.from({ length: añoFin - añoInicio + 1 },(_, i) => añoInicio + i);
 
   // Nuevos estados para datos extra.
   const [arriendosPagados, setArriendosPagados] = useState(0);
@@ -77,8 +70,7 @@ export default function GestorF29() {
       !!files.archivo_compras &&
       !!files.archivo_remuneraciones &&
       !!files.archivo_honorarios;
-
-    setIsReady(ready);
+    setIsReady(ready);  // Si está todo cambiamos el estado y habilitamos.
   }, [files, selectedClienteId, selectedMes, selectedAnio]);
 
   // Handler para archivos
@@ -110,17 +102,10 @@ export default function GestorF29() {
       formData.append('arriendos_pagados', Number(arriendosPagados));
       formData.append('gastos_generales_boletas', Number(gastosGeneralesBoletas));
       // Fin datos nuevos.
-      // Importaciones deprecado.
-      /* formData.append('importaciones', JSON.stringify(importaciones));
-      // Log para depurar (quítalo después)
-        console.log('FormData enviado:');
-        for (let [key, value] of formData.entries()) {
-        console.log(key, value);
-        } */
 
-      await generarYDescargarExcel2(formData); // ← ajusta el service para aceptar FormData
+      await generarYDescargarExcel2(formData);  // LLamamos al service.
 
-      alert('Resumen generado y descargado');
+      alert('Resumen generado y descargado');  
     } catch (err) {
       setError(err.message || 'Error al generar Excel');
     } finally {
@@ -158,9 +143,12 @@ export default function GestorF29() {
     }
   };
 
+  // Para el botón volver.
   const handleVolver = () => {
     navigate('/inicio');
   };
+
+
 
   return (
     <div className="container py-5">
@@ -231,19 +219,6 @@ export default function GestorF29() {
       {/* ingreso de datos extra. */}
       <NumberInput label="Arriendos pagados" value={arriendosPagados} onChange={setArriendosPagados}/>
       <NumberInput label="Gastos generales (boletas)" value={gastosGeneralesBoletas} onChange={setGastosGeneralesBoletas}/>
-      {/* ingreso de importaciones deprecado */}
-      {/** <button
-        className="btn btn-outline-info mt-3 mb-3"
-        onClick={() => setShowImportaciones(!showImportaciones)}
-        disabled={loading}
-      >
-        {showImportaciones ? 'Ocultar Importaciones' : 'Incluir Importaciones'}
-      </button>
-      {showImportaciones && (
-        <div className="card p-4 mb-4">
-          <p>Formulario de importaciones (implementar con radios e inputs)</p>
-        </div>
-      )} */}
       {/* botones de acciones. */}
       <div className="d-flex gap-3 justify-content-center">
         {/* botón apra generar + persistir + exportar. */}
@@ -271,7 +246,6 @@ export default function GestorF29() {
           Volver
         </button>
       </div>
-
       {loading && <LoadingOverlay text="Generando resumen F29..." />}
     </div>
   );

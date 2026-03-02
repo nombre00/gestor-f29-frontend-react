@@ -1,15 +1,11 @@
-// Dashboard del contador para gestionar clientes.
+// Dashboard del contador para gestionar clientes. 
 
 // Dashboard del contador: tabla unificada de clientes con estado F29 mensual y anual.
 // Consume GET /api/resumenes/dashboard → { resumenes_hechos, clientes_pendientes, total_hechos, total_pendientes }
 
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  obtenerDashboardContador,
-  eliminarResumen,
-  cambiarEstadoResumen,
-} from '../../services/resumenesService';
+import { obtenerDashboardContador, eliminarResumen, cambiarEstadoResumen } from '../../services/resumenesService';
 
 // Nombres de meses en español.
 const MESES = [
@@ -17,12 +13,13 @@ const MESES = [
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'
 ];
 
-export default function DashboardContador({ usuario }) {
-  const navigate = useNavigate();
 
-  const [datos, setDatos]     = useState(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError]     = useState('');
+export default function DashboardContador({ usuario }) {
+  // Hooks
+  const navigate = useNavigate();   // Para navegar.
+  const [datos, setDatos]     = useState(null);  // Recibe los datos del dashboard.
+  const [loading, setLoading] = useState(true);  // Controla el spinner.
+  const [error, setError]     = useState('');    // para el mensaje de error.
 
   // Modal de confirmación para borrar.
   const [confirmBorrar, setConfirmBorrar] = useState(null); // { resumen_id, razon_social }
@@ -35,43 +32,48 @@ export default function DashboardContador({ usuario }) {
   const [mesSel,  setMesSel]  = useState(hoy.getMonth() + 1);
   const [anioSel, setAnioSel] = useState(hoy.getFullYear());
 
+
+  // Hook del dashboard.
+  // Busca los datos del dashboard.
   const fetchDashboard = useCallback(async () => {
-    setLoading(true);
-    setError('');
-    try {
-      const data = await obtenerDashboardContador({ mes: mesSel, anio: anioSel });
-      setDatos(data);
-    } catch (err) {
+    setLoading(true);  // Cambiamos el estado del spinner.
+    setError('');  // Inicializamos el mensaje de error.
+    try {  // Intentamos asincronamente:
+      const data = await obtenerDashboardContador({ mes: mesSel, anio: anioSel });  // LLamamos al service.
+      setDatos(data);  // Asignamos los datos encontrados al hook del dashboard.
+    } catch (err) {  // Si error:
       setError(err.response?.data?.detail || err.message || 'Error al cargar datos');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del spinner.
       setLoading(false);
     }
-  }, [mesSel, anioSel]);
+  }, [mesSel, anioSel]);  // Le pasamos estos datos para que los ocupe el service.
 
+
+  // Cuando se carga la página cargamos los datos del dashboard.
   useEffect(() => { fetchDashboard(); }, [fetchDashboard]);
 
-  // ── Borrar resumen ────────────────────────────────────────────────────────
+  // Borrar.
   const handleBorrar = async (resumen_id) => {
-    try {
-      await eliminarResumen(resumen_id);
-      setConfirmBorrar(null);
-      await fetchDashboard();
-    } catch (err) {
-      setConfirmBorrar(null);
+    try {  // Intentamos asincronamente:
+      await eliminarResumen(resumen_id);  // LLamamos al service.
+      setConfirmBorrar(null);   // Cambiamos el estado del hook
+      await fetchDashboard();   // Recargamos los datos de la página.
+    } catch (err) {  // Si error:
+      setConfirmBorrar(null);   // Cambiamos el estado del hook
       setError(err.message || 'Error al eliminar el resumen');
     }
   };
 
-  // ── Toggle de estado: borrador ↔ revisado ─────────────────────────────────
+  //  Toggle de estado: borrador ↔ revisado 
   const handleToggleEstado = async (resumen_id, estado_actual) => {
-    const nuevo_estado = estado_actual === 'borrador' ? 'revisado' : 'borrador';
-    setCambiandoEstado(prev => new Set(prev).add(resumen_id));
-    try {
-      await cambiarEstadoResumen(resumen_id, nuevo_estado);
-      await fetchDashboard();
-    } catch (err) {
+    const nuevo_estado = estado_actual === 'borrador' ? 'revisado' : 'borrador';   // Hook del nuevo estado.
+    setCambiandoEstado(prev => new Set(prev).add(resumen_id));  // Cambiamos el estado.
+    try {  // Intentamos asincronamente:
+      await cambiarEstadoResumen(resumen_id, nuevo_estado);  // LLamamos al service.
+      await fetchDashboard();   // Recargamos los datos de la página.
+    } catch (err) {  // Si error:
       setError(err.message || 'Error al cambiar el estado');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del toggle.
       setCambiandoEstado(prev => {
         const next = new Set(prev);
         next.delete(resumen_id);
@@ -80,7 +82,7 @@ export default function DashboardContador({ usuario }) {
     }
   };
 
-  // ── Tabla unificada: combina hechos + pendientes ordenados alfabéticamente ──
+  //  Tabla unificada de f29s: combina hechos + pendientes ordenados alfabéticamente 
   const filasTabla = datos
     ? [
         ...datos.resumenes_hechos.map(r => ({
@@ -102,19 +104,19 @@ export default function DashboardContador({ usuario }) {
       ].sort((a, b) => a.razon_social.localeCompare(b.razon_social, 'es'))
     : [];
 
-  // ── Badge de estado F29 ───────────────────────────────────────────────────
+  //  Badge de estado F29 
   const BadgeF29 = ({ hecho, estado }) => {
-    if (!hecho) return (
+    if (!hecho) return (  // Si no está hecho:
       <span className="badge bg-warning text-dark">
         <i className="bi bi-clock-fill me-1"></i>Pendiente
       </span>
     );
-    const config = {
+    const config = {  // Si está hecho creamos los badges.
       borrador: { cls: 'bg-secondary', label: 'Borrador' },
       revisado: { cls: 'bg-info text-dark', label: 'Revisado' },
     };
-    const { cls, label } = config[estado] ?? { cls: 'bg-secondary', label: estado };
-    return (
+    const { cls, label } = config[estado] ?? { cls: 'bg-secondary', label: estado };  // Asignamos acorde al estado del f29.
+    return (  // Retornamos el componente rendereable.
       <span className={`badge ${cls}`}>
         <i className="bi bi-check-circle-fill me-1"></i>{label}
       </span>
@@ -122,16 +124,20 @@ export default function DashboardContador({ usuario }) {
   };
 
   // Rango de años para el selector.
-  const anios = Array.from({ length: 4 }, (_, i) => hoy.getFullYear() - i);
+  const hoydia = new Date();
+  const añoActual = hoydia.getFullYear();
+  const añoInicio = 1980;
+  const añoFin = añoActual + 1;
+  const anios = Array.from({ length: añoFin - añoInicio + 1 },(_, i) => añoInicio + i);
 
-  // ── Render ────────────────────────────────────────────────────────────────
+
+  
+  
   return (
     <div className="container-fluid py-4">
-
-      {/* ── Header ───────────────────────────────────────────────────── */}
+      {/*  Header  */}
       <div
-        className="card border-0 shadow-sm mb-4"
-        style={{ background: 'linear-gradient(135deg, #1a56db 0%, #6c3fb5 100%)' }}
+        className="card border-0 shadow-sm mb-4" style={{ background: 'linear-gradient(135deg, #1a56db 0%, #6c3fb5 100%)' }}
       >
         <div className="card-body text-white p-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
           <div>
@@ -144,7 +150,6 @@ export default function DashboardContador({ usuario }) {
               {usuario.empresa || ''}
             </p>
           </div>
-
           {/* Selector de período */}
           <div className="d-flex align-items-center gap-2">
             <span className="text-white opacity-75 small">Período:</span>
@@ -168,19 +173,13 @@ export default function DashboardContador({ usuario }) {
             >
               {anios.map(y => <option key={y} value={y}>{y}</option>)}
             </select>
-            <button
-              className="btn btn-light btn-sm"
-              onClick={fetchDashboard}
-              disabled={loading}
-              title="Actualizar"
-            >
+            <button className="btn btn-light btn-sm" onClick={fetchDashboard} disabled={loading} title="Actualizar">
               <i className={`bi bi-arrow-clockwise${loading ? ' spin' : ''}`}></i>
             </button>
           </div>
         </div>
       </div>
-
-      {/* ── Cards de resumen ─────────────────────────────────────────── */}
+      {/*  Cards de resumen  */}
       <div className="row g-3 mb-4">
         {[
           {
@@ -214,8 +213,7 @@ export default function DashboardContador({ usuario }) {
           </div>
         ))}
       </div>
-
-      {/* ── Tabla de clientes ────────────────────────────────────────── */}
+      {/*  Tabla de clientes  */}
       <div className="card border-0 shadow-sm">
         <div className="card-header bg-white d-flex justify-content-between align-items-center py-3">
           <h5 className="mb-0 text-primary">
@@ -225,10 +223,8 @@ export default function DashboardContador({ usuario }) {
           </h5>
           <span className="badge bg-primary rounded-pill">{filasTabla.length}</span>
         </div>
-
         <div className="card-body p-0">
-
-          {/* Cargando */}
+          {/*  Cargando  */}
           {loading && (
             <div className="text-center py-5">
               <div className="spinner-border text-primary" role="status">
@@ -237,8 +233,7 @@ export default function DashboardContador({ usuario }) {
               <p className="mt-2 text-muted small">Cargando clientes...</p>
             </div>
           )}
-
-          {/* Error */}
+          {/*  Error  */}
           {!loading && error && (
             <div className="alert alert-danger m-3">
               <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -248,8 +243,7 @@ export default function DashboardContador({ usuario }) {
               </button>
             </div>
           )}
-
-          {/* Sin clientes */}
+          {/*  Sin clientes  */}
           {!loading && !error && filasTabla.length === 0 && (
             <div className="text-center py-5 text-muted">
               <i className="bi bi-inbox fs-1 d-block mb-3"></i>
@@ -257,7 +251,6 @@ export default function DashboardContador({ usuario }) {
               <p className="small">Contacta al administrador para que te asigne clientes.</p>
             </div>
           )}
-
           {/* Tabla */}
           {!loading && !error && filasTabla.length > 0 && (
             <div className="table-responsive">
@@ -279,33 +272,27 @@ export default function DashboardContador({ usuario }) {
                 <tbody>
                   {filasTabla.map(fila => (
                     <tr key={fila.id}>
-
                       {/* Razón Social */}
                       <td>
                         <i className="bi bi-building me-2 text-primary"></i>
                         <span className="fw-semibold">{fila.nombre || fila.razon_social}</span>
                       </td>
-
                       {/* RUT */}
                       <td className="text-muted">{fila.rut}</td>
-
                       {/* F29 del mes */}
                       <td className="text-center">
                         <BadgeF29 hecho={fila.f29_hecho} estado={fila.estado_f29} />
                       </td>
-
                       {/* Informe anual — placeholder */}
                       <td className="text-center">
                         <span className="badge bg-light text-secondary border">
                           <i className="bi bi-hourglass-split me-1"></i>No disponible
                         </span>
                       </td>
-
                       {/* Acciones */}
                       <td className="text-center">
                         {fila.f29_hecho ? (
                           <div className="d-flex justify-content-center gap-2 flex-wrap">
-
                             {/* Editar → /resumen con id_bd en state (evita exponer IDs en URL) */}
                             <button
                               className="btn btn-sm btn-outline-primary"
@@ -329,7 +316,6 @@ export default function DashboardContador({ usuario }) {
                                   : <><i className="bi bi-arrow-counterclockwise me-1"></i>Borrador</>
                               }
                             </button>
-
                             {/* Borrar — solo disponible en estado borrador */}
                             {fila.estado_f29 === 'borrador' && (
                               <button
@@ -340,10 +326,9 @@ export default function DashboardContador({ usuario }) {
                                 <i className="bi bi-trash-fill me-1"></i>Borrar
                               </button>
                             )}
-
                           </div>
                         ) : (
-                          /* Generar → /gestor pasando cliente_id en state */
+                          /* Generar -> /gestor pasando cliente_id en state */
                           <button
                             className="btn btn-sm btn-outline-success"
                             title="Generar F29"
@@ -353,7 +338,6 @@ export default function DashboardContador({ usuario }) {
                           </button>
                         )}
                       </td>
-
                     </tr>
                   ))}
                 </tbody>
@@ -362,8 +346,7 @@ export default function DashboardContador({ usuario }) {
           )}
         </div>
       </div>
-
-      {/* ── Modal confirmación borrar ─────────────────────────────────── */}
+      {/*  Modal confirmación borrar  */}
       {confirmBorrar && (
         <>
           <div className="modal-backdrop fade show" style={{ zIndex: 1040 }}></div>
@@ -407,8 +390,7 @@ export default function DashboardContador({ usuario }) {
           </div>
         </>
       )}
-
-      {/* Animación spin para el botón de refresh */}
+      {/*  Animación spin para el botón de refresh  */}
       <style>{`
         @keyframes spin { to { transform: rotate(360deg); } }
         .spin { display: inline-block; animation: spin 0.8s linear infinite; }

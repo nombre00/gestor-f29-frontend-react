@@ -190,7 +190,6 @@ export default function VistaResumenAnual() {
         TT={contenido.TT || 0}
         // sin handlers
       />
-
       {/* Datos adicionales – solo lectura */}
       <div className="card mb-4 shadow-sm border-secondary">
         <div className="card-header bg-secondary text-white">

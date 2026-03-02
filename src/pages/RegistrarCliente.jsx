@@ -10,55 +10,52 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // Módulos.
 import api from '../api/api';
-import { CLIENTE_FORM_INICIAL } from '../services/clienteService';
+import { CLIENTE_FORM_INICIAL, crearCliente } from '../services/clienteService';
 import Campo from '../components/campo';
 
 
 
 // ── Componente principal ───────────────────────────────────────────────────────
 export default function RegistrarCliente() {
+  // Hooks
   const [formData, setFormData] = useState(CLIENTE_FORM_INICIAL);
   const [loading, setLoading]   = useState(false);
   const [error, setError]       = useState('');
   const navigate = useNavigate();
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
-
+  // Handlers
+  // Cuando algo cambia en el formulario para re-renderearlo.
   const handleChange = (field, value) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
-  // onChangeFn recibe (field, value) igual que handleChange para ser intercambiable.
+  // onChange recibe (field, value) igual que handleChange para ser intercambiable.
   const handleRutChange = (field, value) => {
     const limpio = value.replace(/[^0-9kK-]/g, '').toUpperCase();
     handleChange(field, limpio);
   };
 
+  // Cuando presionamos el botón registrar cliente.
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setError('');
-
-    if (!formData.rut || !formData.razon_social) {
+    e.preventDefault();  // Evita los valores default.
+    setError('');  // Inicializamos el texto del error.
+    if (!formData.rut || !formData.razon_social) {  // rut y razon soical deben estar ingresados.
       setError('RUT y Razón Social son obligatorios.');
       return;
     }
-    if (formData.rut.replace('-', '').replace('K', '').length < 7) {
+    if (formData.rut.replace('-', '').replace('K', '').length < 7) {  // Verifica la longitud del rut.
       setError('El RUT ingresado no es válido.');
       return;
     }
-
-    setLoading(true);
-    try {
-      const payload = Object.fromEntries(
-        Object.entries(formData).filter(([, v]) => v !== '')
-      );
-      await api.post('/api/clientes', payload);
-      navigate('/inicio', {
-        state: { mensaje: `Cliente "${formData.razon_social}" registrado correctamente.` }
-      });
-    } catch (err) {
+    setLoading(true);  // Si todo bien cambiamos el estado del controlador del spiner.
+    try {  // Intentamos: 
+      const payload = Object.fromEntries(Object.entries(formData).filter(([, v]) => v !== ''));  // Serializamos a un JSON.
+      // await api.post('/api/clientes', payload);
+      await crearCliente(payload)  // LLamamos al service.
+      navigate('/inicio', {state: { mensaje: `Cliente "${formData.razon_social}" registrado correctamente.` }}); // Navegamos al inicio.
+    } catch (err) {  // Si error: 
       setError(err.response?.data?.detail || err.message || 'Error al registrar cliente.');
-    } finally {
+    } finally {  // Finalmente cambiamos el estado del controlador del spiner.
       setLoading(false);
     }
   };
@@ -66,7 +63,7 @@ export default function RegistrarCliente() {
   // Props comunes que comparten todos los campos.
   const campoBase = { onChange: handleChange, disabled: loading };
 
-  // ── Render ─────────────────────────────────────────────────────────────────
+  
   return (
     <div className="container py-4" style={{ maxWidth: '780px' }}>
 
@@ -98,7 +95,7 @@ export default function RegistrarCliente() {
 
       <form onSubmit={handleSubmit}>
 
-        {/* ── Sección 1: Datos del cliente ──────────────────────────── */}
+        {/*  Sección 1: Datos del cliente  */}
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-primary text-white py-3">
             <h6 className="mb-0">
@@ -138,7 +135,7 @@ export default function RegistrarCliente() {
           </div>
         </div>
 
-        {/* ── Sección 2: Dirección ──────────────────────────────────── */}
+        {/*  Sección 2: Dirección  */}
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-secondary text-white py-3">
             <h6 className="mb-0">
@@ -166,7 +163,7 @@ export default function RegistrarCliente() {
           </div>
         </div>
 
-        {/* ── Sección 3: Contacto ───────────────────────────────────── */}
+        {/*  Sección 3: Contacto  */}
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-info text-white py-3">
             <h6 className="mb-0">
@@ -196,14 +193,9 @@ export default function RegistrarCliente() {
           </div>
         </div>
 
-        {/* ── Acciones ─────────────────────────────────────────────── */}
+        {/*  Acciones  */}
         <div className="d-flex justify-content-end gap-2">
-          <button
-            type="button"
-            className="btn btn-outline-secondary"
-            onClick={() => navigate('/inicio')}
-            disabled={loading}
-          >
+          <button type="button" className="btn btn-outline-secondary" onClick={() => navigate('/inicio')} disabled={loading}>
             Cancelar
           </button>
           <button type="submit" className="btn btn-primary" disabled={loading}>
