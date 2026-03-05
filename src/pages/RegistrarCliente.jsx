@@ -30,6 +30,7 @@ export default function RegistrarCliente() {
   };
 
   // onChange recibe (field, value) igual que handleChange para ser intercambiable.
+  // Sacado del input del RUT:    onChangeFn={handleRutChange}
   const handleRutChange = (field, value) => {
     const limpio = value.replace(/[^0-9kK-]/g, '').toUpperCase();
     handleChange(field, limpio);
@@ -108,7 +109,7 @@ export default function RegistrarCliente() {
               <div className="col-md-4">
                 <Campo {...campoBase} label="RUT" field="rut"
                   value={formData.rut} placeholder="12345678-9"
-                  requerido onChangeFn={handleRutChange}
+                  requerido
                 />
               </div>
               <div className="col-md-8">
