@@ -7,7 +7,7 @@ import axios from 'axios'
 // desarrollo = 'http://localhost:8000'
 // despliegue = 'http://192.168.0.21:8000'
 const api = axios.create({
-  baseURL: 'http://192.168.0.21:8000',
+  baseURL: 'http://localhost:8000',
   timeout: 30000,
   headers: {
     'Content-Type': 'application/json',

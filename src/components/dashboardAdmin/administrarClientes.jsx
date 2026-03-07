@@ -125,9 +125,17 @@ export default function AdministrarClientes() {
     return u ? `${u.nombre} ${u.apellido ?? ''}`.trim() : '—';
   };
 
-  // Hooks
-  const activos   = clientes.filter(c => c.activo);
-  const inactivos = clientes.filter(c => !c.activo);
+
+  // Ordenamos los clientes en listas ordenadas por nro_cliente.
+  const sortByNro = (lista) => [...lista].sort((a, b) => {
+    if (a.nro_cliente == null && b.nro_cliente == null) return 0;
+    if (a.nro_cliente == null) return 1;   // sin número van al final
+    if (b.nro_cliente == null) return -1;
+    return Number(a.nro_cliente) - Number(b.nro_cliente);  // descendente
+  });
+  // Hooks de las listas de la tabla.
+  const activos   = sortByNro(clientes.filter(c => c.activo));
+  const inactivos = sortByNro(clientes.filter(c => !c.activo));
 
   
   return (
@@ -174,6 +182,7 @@ export default function AdministrarClientes() {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
+                    <th className="text-center">N° Cliente</th>
                     <th>Razón Social</th>
                     <th>Contador asignado</th>
                     <th className="text-center">Estado</th>
@@ -184,6 +193,9 @@ export default function AdministrarClientes() {
                 <tbody>
                   {activos.map(c => (
                     <tr key={c.id}>
+                      <td className="text-center fw-semibold text-primary">
+                        {c.nro_cliente ?? <span className="text-muted">—</span>}
+                      </td>
                       <td>
                         <div className="fw-semibold">
                           <i className="bi bi-building me-2 text-primary"></i>
@@ -236,6 +248,7 @@ export default function AdministrarClientes() {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
+                    <th className="text-center">N° Cliente</th>
                     <th>Razón Social</th>
                     <th>Contador asignado</th>
                     <th className="text-center">Estado</th>
@@ -245,6 +258,9 @@ export default function AdministrarClientes() {
                 <tbody>
                   {inactivos.map(c => (
                     <tr key={c.id} className="table-secondary text-muted">
+                      <td className="text-center fw-semibold text-primary">
+                        {c.nro_cliente ?? <span className="text-muted">—</span>}
+                      </td>
                       <td>
                         <div className="fw-semibold">
                           <i className="bi bi-building me-2"></i>
@@ -286,4 +302,4 @@ export default function AdministrarClientes() {
 
     </div>
   );
-}
+} 

@@ -3,7 +3,7 @@
 import api from '../api/api';
 
 
-// Valor inicial del formulario de cliente
+// Valor inicial del formulario de cliente 
 // Vive aquí para ser reutilizado tanto por el contador (registrarCliente) como por el admin (administrarClientes). 
 export const CLIENTE_FORM_INICIAL = {
   rut:                 '',
@@ -11,6 +11,7 @@ export const CLIENTE_FORM_INICIAL = {
   nombre_comercial:    '',
   giro:                '',
   actividad_economica: '',
+  nro_cliente:         '',
   direccion:           '',
   comuna:              '',
   ciudad:              '',

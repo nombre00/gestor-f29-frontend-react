@@ -133,6 +133,9 @@ export default function RegistrarCliente() {
             <Campo {...campoBase} label="Actividad Económica" field="actividad_economica"
               value={formData.actividad_economica} placeholder="Código o descripción SII"
             />
+            <Campo {...campoBase} label="N° Cliente" field="nro_cliente"
+              value={formData.nro_cliente} placeholder="Ej: 1234 o 1234.5"
+            />
           </div>
         </div>
 

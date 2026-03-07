@@ -9,18 +9,16 @@ import api from '../api/api'
  * @param {Object} params.files - { ventas: File, compras: File, ... }
  * @param {number} params.remanente
  * @param {Object} params.importaciones
- * @returns {Promise<Object>} Resumen F29
+ * @returns {Promise<Object>} Resumen F29 
  */
 export const procesarYObtenerResumen = async ({ files, remanente, importaciones }) => {
   const formData = new FormData()
-
   // Agregar archivos
   Object.entries(files).forEach(([key, file]) => {
     if (file instanceof File) {
       formData.append(key, file)
     }
   })
-
   // Agregar datos como JSON string (el backend debe parsearlo)
   formData.append('remanente_anterior', remanente.toString())
   formData.append('importaciones', JSON.stringify(importaciones))
@@ -31,7 +29,6 @@ export const procesarYObtenerResumen = async ({ files, remanente, importaciones 
         'Content-Type': 'multipart/form-data',
       },
     })
-
     const resumen = response.data.resumen
     if (!resumen) {
       throw new Error('El backend no devolvió un resumen válido')
@@ -58,10 +55,8 @@ export const generarYDescargarExcel = async ({ files, remanente, importaciones }
       formData.append(key, file)
     }
   })
-
   formData.append('remanente_anterior', remanente.toString())
   formData.append('importaciones', JSON.stringify(importaciones))
-
   try {
     const response = await api.post('/f29/generar-excel', formData, {
       responseType: 'blob',  // importante: recibimos binario

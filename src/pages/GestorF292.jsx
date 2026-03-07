@@ -101,6 +101,7 @@ export default function GestorF29() {
       // Inicio datos nuevos.
       formData.append('arriendos_pagados', Number(arriendosPagados));
       formData.append('gastos_generales_boletas', Number(gastosGeneralesBoletas));
+      formData.append('nro_cliente', clienteSeleccionado?.nro_cliente || '');
       // Fin datos nuevos.
 
       await generarYDescargarExcel2(formData);  // LLamamos al service.
@@ -128,9 +129,8 @@ export default function GestorF29() {
       // Inicio datos nuevos.
       formData.append('arriendos_pagados', Number(arriendosPagados));
       formData.append('gastos_generales_boletas', Number(gastosGeneralesBoletas));
+      formData.append('nro_cliente', clienteSeleccionado?.nro_cliente || '');
       // Fin datos nuevos.
-      // Importaciones deprecado.
-      // formData.append('importaciones', JSON.stringify(importaciones));
 
       const data = await procesarYObtenerResumen2(formData); // llamamos al service.
 

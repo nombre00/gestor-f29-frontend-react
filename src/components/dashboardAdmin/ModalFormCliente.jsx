@@ -27,6 +27,7 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
           nombre_comercial:    cliente.nombre_comercial    ?? '',
           giro:                cliente.giro                ?? '',
           actividad_economica: cliente.actividad_economica ?? '',
+          nro_cliente: cliente.nro_cliente                 ?? '',
           direccion:           cliente.direccion           ?? '',
           comuna:              cliente.comuna              ?? '',
           ciudad:              cliente.ciudad              ?? '',
@@ -118,6 +119,9 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
                 </div>
                 <Campo {...campoBase} label="Actividad Económica" field="actividad_economica"
                   value={form.actividad_economica} placeholder="Código o descripción SII"
+                />
+                <Campo {...campoBase} label="N° Cliente" field="nro_cliente"
+                  value={form.nro_cliente} placeholder="Ej: 1234 o 1234.5"
                 />
 
                 <hr />
