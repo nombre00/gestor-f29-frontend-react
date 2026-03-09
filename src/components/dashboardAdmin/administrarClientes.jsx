@@ -89,7 +89,7 @@ export default function AdministrarClientes() {
     }
   };
 
-  // Función desactivar.
+  // Función desactivar. 
   const handleDesactivar = async (cliente) => {
     if (!confirm(`¿Desactivar a "${cliente.razon_social}"?`)) return;
     setLoading(true);  // CAmbiamos el estado del hook del spinner.

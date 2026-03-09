@@ -63,6 +63,7 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
   };
 
   // Props comunes para todos los campos.
+  // Sacado del rut:    onChangeFn={limpiarRut}
   const campoBase = { onChange: set, disabled: loading, size: 'sm' };
 
   return (
@@ -96,7 +97,7 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
                   <div className="col-md-4">
                     <Campo {...campoBase} label="RUT" field="rut"
                       value={form.rut} placeholder="12345678-9"
-                      requerido onChangeFn={limpiarRut}
+                      requerido 
                     />
                   </div>
                   <div className="col-md-8">

@@ -96,7 +96,7 @@ export default function RegistrarCliente() {
 
       <form onSubmit={handleSubmit}>
 
-        {/*  Sección 1: Datos del cliente  */}
+        {/*  Sección 1: Datos del  cliente  */}
         <div className="card border-0 shadow-sm mb-4">
           <div className="card-header bg-primary text-white py-3">
             <h6 className="mb-0">
