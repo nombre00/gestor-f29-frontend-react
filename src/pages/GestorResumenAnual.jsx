@@ -52,7 +52,6 @@ export default function GestorResumenAnual() {
         </span>
       );
     }
-
     const config = {
       borrador: { cls: 'bg-secondary', label: 'Borrador' },
       revisado: { cls: 'bg-info text-dark', label: 'Revisado' },
@@ -76,10 +75,20 @@ export default function GestorResumenAnual() {
     );
   };
 
-  // ── Render ────────────────────────────────────────────────────────────────
+
+  // Ordenar clientes por nro_cliente ascendente (sin número van al final)
+  const sortByNro = (lista) => [...lista].sort((a, b) => {
+    if (a.nro_cliente == null && b.nro_cliente == null) return 0;
+    if (a.nro_cliente == null) return 1;
+    if (b.nro_cliente == null) return -1;
+    return Number(a.nro_cliente) - Number(b.nro_cliente);
+  });
+  const clientesOrdenados = datos?.clientes ? sortByNro(datos.clientes) : [];
+
+
+  // Render
   return (
     <div className="container-fluid py-4">
-
       {/* Header con selector de año */}
       <div
         className="card border-0 shadow-sm mb-4"
@@ -96,7 +105,6 @@ export default function GestorResumenAnual() {
               {user.empresa || ''}
             </p>
           </div>
-
           {/* Selector de año */}
           <div className="d-flex align-items-center gap-2">
             <span className="text-white opacity-75 small">Año:</span>
@@ -122,7 +130,6 @@ export default function GestorResumenAnual() {
           </div>
         </div>
       </div>
-
       {/* Tarjetas resumen */}
       <div className="row g-3 mb-4">
         {[
@@ -169,7 +176,6 @@ export default function GestorResumenAnual() {
             {datos ? datos.total_clientes || 0 : 0}
           </span>
         </div>
-
         <div className="card-body p-0">
           {loading && (
             <div className="text-center py-5">
@@ -179,7 +185,6 @@ export default function GestorResumenAnual() {
               <p className="mt-2 text-muted small">Cargando clientes...</p>
             </div>
           )}
-
           {error && (
             <div className="alert alert-danger m-3">
               <i className="bi bi-exclamation-triangle-fill me-2"></i>
@@ -190,7 +195,7 @@ export default function GestorResumenAnual() {
             </div>
           )}
 
-          {!loading && !error && (!datos || !datos.clientes || datos.clientes.length === 0) && (
+          {!loading && !error && (!clientesOrdenados  || clientesOrdenados === 0) && (
             <div className="text-center py-5 text-muted">
               <i className="bi bi-inbox fs-1 d-block mb-3"></i>
               <p className="mb-0">No tienes clientes asignados.</p>
@@ -198,11 +203,12 @@ export default function GestorResumenAnual() {
             </div>
           )}
 
-          {!loading && !error && datos?.clientes?.length > 0 && (
+          {!loading && !error && clientesOrdenados?.length > 0 && (
             <div className="table-responsive">
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
+                    <th className="text-center">N° Cliente</th>
                     <th>Nombre</th>
                     <th>RUT</th>
                     <th className="text-center">Estado Resumen {anioSel}</th>
@@ -211,7 +217,7 @@ export default function GestorResumenAnual() {
                   </tr>
                 </thead>
                 <tbody>
-                  {datos.clientes.map(cliente => {
+                  {clientesOrdenados.map(cliente => {
                     const ra = cliente.resumen_anual || {};
                     const existe = ra.existe || false;
                     const meses = ra.meses_incluidos || 0;
@@ -219,7 +225,10 @@ export default function GestorResumenAnual() {
 
                     return (
                       <tr key={cliente.id}>
-                        {/* Nombre del cliente */}
+                        <td className="text-center fw-semibold text-primary">
+                          {cliente.nro_cliente ?? <span className="text-muted">—</span>}
+                        </td>
+                        
                         <td>
                           <i className="bi bi-building me-2 text-primary"></i>
                           <span className="fw-semibold">{cliente.nombre || '-'}</span>

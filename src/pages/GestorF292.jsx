@@ -147,8 +147,7 @@ export default function GestorF29() {
   const handleVolver = () => {
     navigate('/inicio');
   };
-
-
+  
 
   return (
     <div className="container py-5">

@@ -89,6 +89,7 @@ export default function DashboardContador({ usuario }) {
           id:           r.cliente_id,
           rut:          r.rut_cliente,
           razon_social: r.razon_social_cliente,
+          nro_cliente:  r.nro_cliente ?? null,
           f29_hecho:    true,
           estado_f29:   r.estado,   // borrador | revisado
           resumen_id:   r.id,
@@ -97,12 +98,17 @@ export default function DashboardContador({ usuario }) {
           id:           c.id,
           rut:          c.rut,
           razon_social: c.razon_social,
+          nro_cliente:  c.nro_cliente ?? null,
           f29_hecho:    false,
           estado_f29:   null,
           resumen_id:   null,
         })),
-      ].sort((a, b) => a.razon_social.localeCompare(b.razon_social, 'es'))
-    : [];
+      ].sort((a, b) => {
+        if (a.nro_cliente == null && b.nro_cliente == null) return 0;
+        if (a.nro_cliente == null) return 1;
+        if (b.nro_cliente == null) return -1;
+        return Number(a.nro_cliente) - Number(b.nro_cliente);
+      }) : [];
 
   //  Badge de estado F29 
   const BadgeF29 = ({ hecho, estado }) => {
@@ -129,6 +135,16 @@ export default function DashboardContador({ usuario }) {
   const añoInicio = 1980;
   const añoFin = añoActual + 1;
   const anios = Array.from({ length: añoFin - añoInicio + 1 },(_, i) => añoInicio + i);
+
+
+  // Ordenar clientes por nro_cliente ascendente (sin número van al final)
+  const sortByNro = (lista) => [...lista].sort((a, b) => {
+    if (a.nro_cliente == null && b.nro_cliente == null) return 0;
+    if (a.nro_cliente == null) return 1;
+    if (b.nro_cliente == null) return -1;
+    return Number(a.nro_cliente) - Number(b.nro_cliente);
+  });
+  const clientesOrdenados = datos?.clientes ? sortByNro(datos.clientes) : [];
 
 
   
@@ -257,6 +273,7 @@ export default function DashboardContador({ usuario }) {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
+                    <th className="text-center">N° Cliente</th>
                     <th>Nombre</th>
                     <th>RUT</th>
                     <th className="text-center">F29 — {MESES[mesSel]} {anioSel}</th>
@@ -272,6 +289,10 @@ export default function DashboardContador({ usuario }) {
                 <tbody>
                   {filasTabla.map(fila => (
                     <tr key={fila.id}>
+                      {/* nro_cliente */}
+                      <td className="text-center fw-semibold text-primary">
+                        {fila.nro_cliente ?? <span className="text-muted">—</span>}
+                      </td>
                       {/* Razón Social */}
                       <td>
                         <i className="bi bi-building me-2 text-primary"></i>
