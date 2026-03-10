@@ -7,7 +7,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { obtenerDashboardContador, eliminarResumen, cambiarEstadoResumen } from '../../services/resumenesService';
 
-// Nombres de meses en español.
+// Lista de nombres de meses en español.
 const MESES = [
   '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
   'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'

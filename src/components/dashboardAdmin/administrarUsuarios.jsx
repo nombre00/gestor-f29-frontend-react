@@ -5,16 +5,8 @@
 
 import { useState, useEffect } from 'react';
 import ModalInvitarUsuario from './modalInvitarUsuario';
-import { 
-  obtenerUsuarios, 
-  desactivarUsuario, 
-  reactivarUsuario 
-} from '../../services/usuariosService';
-import { 
-  obtenerInvitacionesPendientes,
-  reenviarInvitacion,
-  cancelarInvitacion
-} from '../../services/invitacionesService';
+import { obtenerUsuarios,  desactivarUsuario,  reactivarUsuario } from '../../services/usuariosService';
+import { obtenerInvitacionesPendientes, reenviarInvitacion, cancelarInvitacion } from '../../services/invitacionesService';
 
 export default function AdministrarUsuarios() {
   const [usuarios, setUsuarios] = useState([]);
@@ -124,26 +116,14 @@ export default function AdministrarUsuarios() {
   const formatearFecha = (timestamp) => {
     if (!timestamp) return '-';
     const fecha = new Date(timestamp);
-    return fecha.toLocaleDateString('es-CL', { 
-      day: '2-digit', 
-      month: '2-digit', 
-      year: 'numeric' 
-    });
+    return fecha.toLocaleDateString('es-CL', { day: '2-digit', month: '2-digit', year: 'numeric' });
   };
 
   // Badge de rol con colores
   const BadgeRol = ({ rol }) => {
-    const colores = {
-      admin: 'bg-danger',
-      contador: 'bg-primary',
-      asistente: 'bg-secondary'
-    };
+    const colores = { admin: 'bg-danger', contador: 'bg-primary', asistente: 'bg-secondary' };
     
-    const labels = {
-      admin: 'Administrador',
-      contador: 'Contador',
-      asistente: 'Asistente'
-    };
+    const labels = { admin: 'Administrador', contador: 'Contador', asistente: 'Asistente' };
     
     return (
       <span className={`badge ${colores[rol] || 'bg-secondary'} ms-2`}>
@@ -219,7 +199,7 @@ export default function AdministrarUsuarios() {
                 </thead>
                 {/** Cuerpo de la tabla. */}
                 <tbody>
-                  {usuarios.filter(u => u.activo).map((usuario) => (  // Iretación de los usuarios activos de la empresa.
+                  {usuarios.filter(u => u.activo).map((usuario) => (  // Iteración de los usuarios activos de la empresa.
                     <tr key={usuario.id}>
                       <td>
                         {/** nombre completo */}

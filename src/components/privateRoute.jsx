@@ -17,11 +17,11 @@ export default function PrivateRoute() {
     );
   }
 
-  // Si no está autenticado → redirige a login
+  // Si no está autenticado redirige a login
   if (!isAuthenticated) {
     return <Navigate to="/login" replace />;
   }
 
-  // Si está autenticado → renderiza el layout y las rutas hijas
+  // Si está autenticado renderiza el layout y las rutas hijas
   return <Outlet />;
 }

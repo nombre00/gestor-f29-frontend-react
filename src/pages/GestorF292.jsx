@@ -19,15 +19,15 @@ export default function GestorF29() {
   // Estados existentes
   const [files, setFiles] = useState({});  // Receptor de los archivos.
   const [remanente, setRemanente] = useState(0);  // Receptor del remanente.
-  const [loading, setLoading] = useState(false);  // maneja el spinner
+  const [loading, setLoading] = useState(false);  // maneja el spinner.
   const [error, setError] = useState('');  // mensaje de error.
   const [isReady, setIsReady] = useState(false);  // Para habilitar botónes.
 
   // Nuevos estados para cliente y período
-  const [clientes, setClientes] = useState([]);               // Lista de clientes desde API
-  const [selectedClienteId, setSelectedClienteId] = useState(''); // '' = no seleccionado
-  const [selectedMes, setSelectedMes] = useState(new Date().getMonth() + 1); // mes actual (1-12)
-  const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear()); // año actual
+  const [clientes, setClientes] = useState([]);               // Lista de clientes desde API.
+  const [selectedClienteId, setSelectedClienteId] = useState(''); // '' = no seleccionado.
+  const [selectedMes, setSelectedMes] = useState(new Date().getMonth() + 1); // mes actual (1-12).
+  const [selectedAnio, setSelectedAnio] = useState(new Date().getFullYear()); // año actual.
 
   // Meses (para mostrar nombre bonito)
   const meses = [
@@ -73,7 +73,7 @@ export default function GestorF29() {
     setIsReady(ready);  // Si está todo cambiamos el estado y habilitamos.
   }, [files, selectedClienteId, selectedMes, selectedAnio]);
 
-  // Handler para archivos
+  // Handler para archivos, acá capturamos el archivo y el string que usamos como llave cuando lo guardamos en formData.
   const handleFileSelect = (key) => (file) => {
     setFiles(prev => ({ ...prev, [key]: file }));
     setError('');
@@ -90,10 +90,11 @@ export default function GestorF29() {
     setLoading(true);
     setError('');
     try {
-      const formData = new FormData();
-      Object.entries(files).forEach(([key, file]) => {
-        if (file) formData.append(key, file);
+      const formData = new FormData();  // formData es los archivos en bytes.
+      Object.entries(files).forEach(([key, file]) => {  // por cada arquivo guardado en files.
+        if (file) formData.append(key, file);  // Si existe lo guardamos como tuple.
       });
+      // Datos que no son archivos.
       formData.append('cliente_id', Number(selectedClienteId));
       formData.append('periodo', periodo);
       // formData.append('remanente_anterior', remanente.toString());
@@ -104,7 +105,7 @@ export default function GestorF29() {
       formData.append('nro_cliente', clienteSeleccionado?.nro_cliente || '');
       // Fin datos nuevos.
 
-      await generarYDescargarExcel2(formData);  // LLamamos al service.
+      await generarYDescargarExcel2(formData);  // LLamamos al service asíncronamente.
 
       alert('Resumen generado y descargado');  
     } catch (err) {
@@ -119,10 +120,11 @@ export default function GestorF29() {
     setLoading(true);
     setError('');
     try {
-      const formData = new FormData();
-      Object.entries(files).forEach(([key, file]) => {
-        if (file) formData.append(key, file);
+      const formData = new FormData();  // formData es los archivos en bytes.
+      Object.entries(files).forEach(([key, file]) => {  // por cada arquivo guardado en files.
+        if (file) formData.append(key, file);  // Si existe lo guardamos como tuple.
       });
+      // Datos que no son archivos.
       formData.append('cliente_id', selectedClienteId);
       formData.append('periodo', periodo);
       formData.append('remanente_anterior', remanente.toString());
@@ -132,9 +134,9 @@ export default function GestorF29() {
       formData.append('nro_cliente', clienteSeleccionado?.nro_cliente || '');
       // Fin datos nuevos.
 
-      const data = await procesarYObtenerResumen2(formData); // llamamos al service.
+      const data = await procesarYObtenerResumen2(formData); // llamamos al service asíncronamente.
 
-      // navigate('/resumen', { state: { resumen, id_bd: resumen.id_bd } });
+      // navigate('/resumen', { state: { resumen, id_bd: resumen.id_bd } });  - firma vieja del endpoint, deprecada.
       navigate('/resumen', { state: { resumen: data.resumen, id_bd: data.id_bd } })
     } catch (err) {
       setError(err.message || 'Error al generar resumen');

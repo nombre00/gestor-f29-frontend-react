@@ -47,6 +47,7 @@ export default function VistaRegistro() {
     }
   };
 
+  // Función que ingresa los datos.
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorForm('');
@@ -63,12 +64,7 @@ export default function VistaRegistro() {
 
     setLoading(true);
     try {
-      await completarRegistro({
-        token,
-        password,
-        nombre: nombre.trim(),
-        apellido: apellido.trim() || undefined,
-      });
+      await completarRegistro({ token, password, nombre: nombre.trim(), apellido: apellido.trim() || undefined, });  // Función asíncrona.
       setRegistroExitoso(true);
     } catch (err) {
       setErrorForm(err.message || 'Error al completar el registro.');

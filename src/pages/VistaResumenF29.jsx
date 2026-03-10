@@ -19,9 +19,9 @@ export default function ResumenF29() {
   const location  = useLocation();
   const navigate  = useNavigate();
 
-  // ── Dos modos de entrada ──────────────────────────────────────────────────
-  // 1. Desde GestorF29: location.state = { resumen, id_bd }  → datos ya en memoria.
-  // 2. Desde Dashboard: location.state = { id_bd, cliente_id } → hay que hacer fetch.
+  //  Dos modos de entrada 
+  // 1. Desde GestorF29: location.state = { resumen, id_bd }   datos ya en memoria.
+  // 2. Desde Dashboard: location.state = { id_bd, cliente_id }   hay que hacer fetch.
   const initialResumen = location.state?.resumen || null;
   const id_bd          = location.state?.id_bd   || null;
 
@@ -31,7 +31,7 @@ export default function ResumenF29() {
   const [loadingInicial, setLoadingInicial] = useState(false); // carga al montar
   const [error,          setError]          = useState('');
 
-  // ── Al montar: si tenemos resumen directo lo usamos, si no hacemos fetch ──
+  //  Al montar: si tenemos resumen directo lo usamos, si no hacemos fetch
   useEffect(() => {
     if (initialResumen) {
       // Vino desde GestorF29 con el objeto completo
@@ -64,10 +64,10 @@ export default function ResumenF29() {
     setError('No se recibieron datos de resumen. Vuelve a cargar documentos.');
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
-  // ── Determina si la edición está bloqueada ────────────────────────────────
+  //  Determina si la edición está bloqueada 
   const bloqueado = estadoResumen === 'revisado';
 
-  // ── Handlers de edición (solo actúan si no está bloqueado) ───────────────
+  //  Handlers de edición (solo actúan si no está bloqueado).
   const handleVentaChange = (index, field, value) => {
     if (bloqueado) return;
     setResumen((prev) => {
@@ -140,7 +140,7 @@ export default function ResumenF29() {
     }
   };
 
-  // ── Estados de carga y error ──────────────────────────────────────────────
+  //  Estados de carga y error 
   if (loadingInicial) {
     return (
       <div className="container py-5 text-center">
@@ -167,7 +167,7 @@ export default function ResumenF29() {
     );
   }
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  //  Render 
   return (
     <div className="container py-5 position-relative">
       <h1 className="mb-3 text-primary text-center">Resumen Formulario 29</h1>

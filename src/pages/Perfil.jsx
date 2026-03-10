@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/SideBar'
 import { obtenerPerfil, cambiarPassword } from '../services/usuariosService';
 
+// Esquema.
 const ROL_LABEL = {
   super: { texto: 'Super Admin', clase: 'bg-dark' },
   admin: { texto: 'Administrador', clase: 'bg-primary' },
@@ -15,12 +16,12 @@ const ROL_LABEL = {
 export default function VistaPerfil() {
   const navigate = useNavigate();
 
-  // Datos del usuario
-  const [usuario, setUsuario] = useState(null);
-  const [loadingPerfil, setLoadingPerfil] = useState(true);
-  const [errorPerfil, setErrorPerfil] = useState('');
+  // Datos del usuario.
+  const [usuario, setUsuario] = useState(null);  // Recibe los datos del usuario.
+  const [loadingPerfil, setLoadingPerfil] = useState(true);  // Controla el spiner.
+  const [errorPerfil, setErrorPerfil] = useState('');  // Mensaje error.
 
-  // Formulario cambio de contraseña
+  // Formulario cambio de contraseña.
   const [passwordActual, setPasswordActual] = useState('');
   const [passwordNueva, setPasswordNueva] = useState('');
   const [confirmarPassword, setConfirmarPassword] = useState('');
@@ -28,15 +29,17 @@ export default function VistaPerfil() {
   const [errorPassword, setErrorPassword] = useState('');
   const [exitoPassword, setExitoPassword] = useState(false);
 
+  // Cargamos el perfil.
   useEffect(() => {
     cargarPerfil();
   }, []);
 
+  // Función asíncrona que carga el perfil.
   const cargarPerfil = async () => {
     try {
-      const datos = await obtenerPerfil();
-      setUsuario(datos);
-    } catch (err) {
+      const datos = await obtenerPerfil();  // Función asíncrona.
+      setUsuario(datos);  // Guardamos los datos recibidos en el hook.
+    } catch (err) {  // Si error vamos al login.
       if (err.message?.includes('401') || err.message?.includes('403')) {
         localStorage.removeItem('token');
         navigate('/login');
@@ -44,15 +47,14 @@ export default function VistaPerfil() {
       }
       setErrorPerfil('No se pudo cargar la información del perfil.');
     } finally {
-      setLoadingPerfil(false);
+      setLoadingPerfil(false);  // Desactivamos el spiner.
     }
   };
 
   const handleCambiarPassword = async (e) => {
-    e.preventDefault();
-    setErrorPassword('');
-    setExitoPassword(false);
-
+    e.preventDefault();  // Evitamos los valores default.
+    setErrorPassword('');  // inicializamos mensaje error.
+    setExitoPassword(false);  // Dejamos la flag en falso.
     // Validaciones
     if (passwordNueva.length < 8) {
       setErrorPassword('La nueva contraseña debe tener al menos 8 caracteres.');
@@ -66,22 +68,23 @@ export default function VistaPerfil() {
       setErrorPassword('Las contraseñas nuevas no coinciden.');
       return;
     }
-
-    setLoadingPassword(true);
+ 
+    // Si todo bien cambiamos la clave.
+    setLoadingPassword(true);  // dejamos la otra flag en true.
     try {
-      await cambiarPassword({
+      await cambiarPassword({  // Función asíncrona.
         password_actual: passwordActual,
         password_nueva: passwordNueva,
       });
-      setExitoPassword(true);
+      setExitoPassword(true);  // Dejamos la flag en verdadero.
       // Limpiar formulario
       setPasswordActual('');
       setPasswordNueva('');
       setConfirmarPassword('');
-    } catch (err) {
+    } catch (err) {  // Si error.
       setErrorPassword(err.message || 'Error al cambiar la contraseña.');
     } finally {
-      setLoadingPassword(false);
+      setLoadingPassword(false);  // Desactivamos spiner.
     }
   };
 

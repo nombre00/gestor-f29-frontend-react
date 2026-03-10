@@ -1,11 +1,11 @@
 // Sidebar para enrutar.
 
 import { NavLink, useNavigate } from 'react-router-dom';
-import { useAuth } from '../context/AuthContext';  // ← importa el contexto
+import { useAuth } from '../context/AuthContext';  //  importa el contexto
 
 export default function Sidebar() {
-  const { logout } = useAuth();           // ← extrae la función logout del contexto
-  const navigate = useNavigate();         // ← para redirigir después del logout
+  const { logout } = useAuth();           //  extrae la función logout del contexto
+  const navigate = useNavigate();         //  para redirigir después del logout
 
   const handleLogout = () => {
     logout();                             // Limpia contexto + localStorage ('token' y 'user')

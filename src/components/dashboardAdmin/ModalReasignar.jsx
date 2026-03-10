@@ -10,23 +10,23 @@ import { useState } from 'react';
 
 
 export default function ModalReasignar({ cliente, contadores, onReasignar, onCerrar, loading }) {
-  const [nuevoId, setNuevoId] = useState('');
-  const [error, setError]     = useState('');
-
+  const [nuevoId, setNuevoId] = useState('');  // Hook que contiene el id del nuevo contador.
+  const [error, setError]     = useState('');  // Hook del mensaje error.
+  // Hook del botón ingresar cambios.
   const handleSubmit = (e) => {
-    e.preventDefault();
+    e.preventDefault();  // No acceptamos los valores por default.
     setError('');
 
-    if (!nuevoId) {
+    if (!nuevoId) {  // Si no se ha seleccionado un contador nuevo
       setError('Selecciona un contador.');
       return;
     }
-    if (Number(nuevoId) === cliente.asignado_a_usuario_id) {
+    if (Number(nuevoId) === cliente.asignado_a_usuario_id) {  // Si se selecciona el contador ya asignado.
       setError('El cliente ya está asignado a este contador.');
       return;
     }
 
-    onReasignar(Number(nuevoId));
+    onReasignar(Number(nuevoId));  // Asignamos.
   };
 
   return (

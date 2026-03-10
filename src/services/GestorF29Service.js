@@ -3,14 +3,8 @@
 
 import api from '../api/api' 
 
-/**
- * Procesa los archivos y devuelve el resumen F29 en JSON
- * @param {Object} params
- * @param {Object} params.files - { ventas: File, compras: File, ... }
- * @param {number} params.remanente
- * @param {Object} params.importaciones
- * @returns {Promise<Object>} Resumen F29 
- */
+
+// Procesa los archivos y devuelve el resumen F29 en JSON   - deprecado.
 export const procesarYObtenerResumen = async ({ files, remanente, importaciones }) => {
   const formData = new FormData()
   // Agregar archivos
@@ -42,11 +36,7 @@ export const procesarYObtenerResumen = async ({ files, remanente, importaciones 
 
 
 
-
-/**
- * Genera y descarga el Excel directamente (sin guardar en disco, ya que es frontend)
- * @param {Object} params - igual que arriba
- */
+// Genera y descarga el Excel directamente (sin guardar en disco, ya que es frontend)   - deprecado.
 export const generarYDescargarExcel = async ({ files, remanente, importaciones }) => {
   const formData = new FormData()
 

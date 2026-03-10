@@ -1,12 +1,7 @@
 // components/paginaVistaResumen/SeccionCreditosComprasReadOnly.jsx
 import { formatCLP } from '../../services/F29Calculator';
 
-export default function SeccionCompras({
-  comprasDetalle,
-  comprasTotal,
-  IVAPP,
-  remanente,
-}) {
+export default function SeccionCompras({ comprasDetalle, comprasTotal, IVAPP, remanente, }) {
   return (
     <div className="card mb-4 shadow-sm border-success">
       <div className="card-header bg-success text-white">

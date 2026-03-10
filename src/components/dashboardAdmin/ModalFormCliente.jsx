@@ -19,6 +19,7 @@ const limpiarRut = (_, value) =>
 export default function ModalFormCliente({ cliente, contadores, onGuardar, onCerrar, loading }) {
   const esEdicion = !!cliente;
 
+  // Datos del formulario.
   const [form, setForm] = useState(
     esEdicion
       ? {
@@ -39,31 +40,30 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
       : { ...CLIENTE_FORM_INICIAL, asignado_a_usuario_id: '' }
   );
 
+  // Hook del texto del error.
   const [error, setError] = useState('');
 
+  // Hook que guarda los valores ingresados al formulario.
   const set = (field, value) => setForm(prev => ({ ...prev, [field]: value }));
 
   const handleSubmit = (e) => {
     e.preventDefault();
     setError('');
-
+    // Revisamos los campos obligatorios.
     if (!form.rut || !form.razon_social) {
       setError('RUT y Razón Social son obligatorios.');
       return;
     }
-
     // Solo enviamos campos con valor.
     const payload = Object.fromEntries(
       Object.entries(form).filter(([, v]) => v !== '')
     );
     if (payload.asignado_a_usuario_id)
       payload.asignado_a_usuario_id = Number(payload.asignado_a_usuario_id);
-
     onGuardar(payload);
   };
 
   // Props comunes para todos los campos.
-  // Sacado del rut:    onChangeFn={limpiarRut}
   const campoBase = { onChange: set, disabled: loading, size: 'sm' };
 
   return (

@@ -1,12 +1,7 @@
 
 import { formatCLP } from '../../services/F29Calculator';
 
-export default function SeccionRetencionesTotal({
-  remuneraciones,
-  honorarios,
-  ppm,
-  TT,
-}) {
+export default function SeccionRetencionesTotal({ remuneraciones, honorarios, ppm, TT, }) {
   return (
     <div className="card mb-4 shadow-sm border-warning">
       <div className="card-header bg-warning text-dark">

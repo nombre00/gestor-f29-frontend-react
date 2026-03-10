@@ -1,19 +1,20 @@
 // Componente para invitar usuario.
-
+// Esto es estandar, no tocar.
 // Modal para invitar nuevos usuarios al sistema
 
 import { useState } from 'react';
 import { crearInvitacion } from '../../services/invitacionesService';
 
 export default function ModalInvitarUsuario({ onClose, onInvitacionEnviada }) {
+  // Hook del formulario.
   const [formData, setFormData] = useState({
     email: '',
     rol: 'contador',
     nombre: '',
     apellido: ''
   });
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);  // Hook controlador del spinner.
+  const [error, setError] = useState('');  // Hook del mensaje error.
 
   // Actualizar campos del formulario
   const handleChange = (field, value) => {
@@ -32,23 +33,22 @@ export default function ModalInvitarUsuario({ onClose, onInvitacionEnviada }) {
       setError('Email y nombre son obligatorios');
       return;
     }
-
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       setError('Email inválido');
       return;
     }
 
-    setLoading(true);
-    setError('');
+    setLoading(true);  // activamos el spiner antes de la función asíncrona.
+    setError('');  // Inicializamos el mensaje error.
 
-    try {
-      await crearInvitacion(formData);
+    try {  // Intentamos.
+      await crearInvitacion(formData);  // Función asíncrona.
       alert('Invitación enviada exitosamente');
       onInvitacionEnviada();
-    } catch (err) {
+    } catch (err) {  // Si error.
       setError(err.message || 'Error al enviar invitación');
     } finally {
-      setLoading(false);
+      setLoading(false);  // Desactivamos el spiner.
     }
   };
 

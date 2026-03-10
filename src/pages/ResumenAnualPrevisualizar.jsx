@@ -20,7 +20,7 @@ import { formatCLP } from '../services/F29Calculator';
 export default function VistaResumenAnual() {
   const { clienteId, anio } = useParams(); // /resumen-anual-previsualizar/:clienteId/:anio
   const navigate = useNavigate();
-  const location = useLocation();
+  //  const location = useLocation();   - no se usa.
 
   const [resumenData, setResumenData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -102,7 +102,7 @@ export default function VistaResumenAnual() {
     );
   };
 
-  // ── Render ────────────────────────────────────────────────────────────────
+  // Render 
   if (loading) {
     return (
       <div className="container py-5 text-center">
@@ -172,7 +172,6 @@ export default function VistaResumenAnual() {
       <SeccionVentas
         ventasDetalle={contenido.ventas_detalle || []}
         ventasTotal={contenido.ventas_total || {}}
-        // sin onChange → solo lectura
       />
 
       <SeccionCompras
@@ -180,7 +179,6 @@ export default function VistaResumenAnual() {
         comprasTotal={contenido.compras_total || {}}
         IVAPP={contenido.IVAPP || 0}
         remanente={contenido.remanente || 0}
-        // sin onChange
       />
 
       <SeccionRetencionesTotal
@@ -188,7 +186,6 @@ export default function VistaResumenAnual() {
         honorarios={contenido.honorarios || {}}
         ppm={contenido.ppm || {}}
         TT={contenido.TT || 0}
-        // sin handlers
       />
       {/* Datos adicionales – solo lectura */}
       <div className="card mb-4 shadow-sm border-secondary">

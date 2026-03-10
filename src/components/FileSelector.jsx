@@ -1,4 +1,5 @@
 // Componente reutilizable para seleccionar archivos.
+// Usado en página gestorf29.
 
 import { useState } from 'react'
 

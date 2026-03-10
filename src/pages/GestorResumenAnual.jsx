@@ -7,27 +7,27 @@ import { useNavigate } from 'react-router-dom';
 import { obtenerDashboardResumenAnual } from '../services/resumenesService';
 import { useAuth } from '../context/AuthContext';
 
-// Años disponibles (últimos 5 + próximo)  usuario.nombre
+// Años disponibles (últimos 5 + próximo)  usuario.nombre    //// Falta corregir /////
 const ANIOS = (() => {
   const hoy = new Date().getFullYear();
   return Array.from({ length: 6 }, (_, i) => hoy - 2 + i);
 })();
 
 export default function GestorResumenAnual() {
-  const { user } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();  // Sutenticamos el usuario.
+  const navigate = useNavigate();  // Para navegar.
 
-  const [datos, setDatos] = useState(null);
-  const [anioSel, setAnioSel] = useState(new Date().getFullYear());
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
+  const [datos, setDatos] = useState(null);  // Datos del dashboard.
+  const [anioSel, setAnioSel] = useState(new Date().getFullYear());  // año seleccionado.
+  const [loading, setLoading] = useState(true);  // spiner.
+  const [error, setError] = useState('');  // mensaje error.
 
   const fetchDatos = useCallback(async () => {
-    setLoading(true);
-    setError('');
+    setLoading(true);  // Activamos el spiner.
+    setError('');  // inicializamos el mensaje error.
     try {
-      const data = await obtenerDashboardResumenAnual(anioSel);
-      setDatos(data);
+      const data = await obtenerDashboardResumenAnual(anioSel);  // Buscamos los datos asíncronamente.
+      setDatos(data);  // Guardamos los datos en la variable.
     } catch (err) {
       setError(err.message || 'Error al cargar clientes para resumen anual');
     } finally {
@@ -35,10 +35,12 @@ export default function GestorResumenAnual() {
     }
   }, [anioSel]);
 
+  // Buscamos los datos.
   useEffect(() => {
     fetchDatos();
   }, [fetchDatos]);
 
+  //// Falta corregir, tiene que consumir el service, no puede tener la ruta.   /////
   const handleIrAlResumen = (clienteId, existe) => {
     navigate(`/resumen-anual-previsualizar/${clienteId}/${anioSel}`);
   };
@@ -76,7 +78,7 @@ export default function GestorResumenAnual() {
   };
 
 
-  // Ordenar clientes por nro_cliente ascendente (sin número van al final)
+  // Ordenar clientes por nro_cliente ascendente (sin número van al final).
   const sortByNro = (lista) => [...lista].sort((a, b) => {
     if (a.nro_cliente == null && b.nro_cliente == null) return 0;
     if (a.nro_cliente == null) return 1;
