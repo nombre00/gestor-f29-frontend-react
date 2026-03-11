@@ -82,7 +82,7 @@ export default function DashboardContador({ usuario }) {
     }
   };
 
-  //  Tabla unificada de f29s: combina hechos + pendientes ordenados alfabéticamente 
+  //  Tabla unificada de f29s: combina hechos + pendientes ordenados alfabéticamente.
   const filasTabla = datos
     ? [
         ...datos.resumenes_hechos.map(r => ({
@@ -314,16 +314,25 @@ export default function DashboardContador({ usuario }) {
                       <td className="text-center">
                         {fila.f29_hecho ? (
                           <div className="d-flex justify-content-center gap-2 flex-wrap">
-                            {/* Editar → /resumen con id_bd en state (evita exponer IDs en URL) */}
-                            <button
-                              className="btn btn-sm btn-outline-primary"
-                              title="Editar F29"
-                              onClick={() => navigate('/resumen', { state: { id_bd: fila.resumen_id, cliente_id: fila.id } })}
-                            >
-                              <i className="bi bi-pencil-fill me-1"></i>Editar
-                            </button>
-
-                            {/* Toggle estado: borrador ↔ revisado */}
+                            {/* Editar - solo disponible en estado borrador  o  Ver - solo disponible en estado revisado. */}
+                            {fila.estado_f29 === 'borrador' ? (
+                              <button
+                                className="btn btn-sm btn-outline-primary"
+                                title="Editar F29"
+                                onClick={() => navigate('/resumen', { state: { id_bd: fila.resumen_id, cliente_id: fila.id } })}
+                              >
+                                <i className="bi bi-pencil-fill me-1"></i>Editar
+                              </button>
+                            ) : (
+                              <button
+                                className="btn btn-sm btn-outline-info"
+                                title="Ver F29"
+                                onClick={() => navigate('/resumen', { state: { id_bd: fila.resumen_id, cliente_id: fila.id } })}
+                              >
+                                <i className="bi bi-eye-fill me-1"></i>Ver
+                              </button>
+                            )}
+                            {/* Toggle estado: borrador / revisado */}
                             <button
                               className={`btn btn-sm ${fila.estado_f29 === 'borrador' ? 'btn-outline-info' : 'btn-outline-secondary'}`}
                               title={fila.estado_f29 === 'borrador' ? 'Marcar como revisado' : 'Volver a borrador'}

@@ -7,11 +7,13 @@ import { useNavigate } from 'react-router-dom';
 import { obtenerDashboardResumenAnual } from '../services/resumenesService';
 import { useAuth } from '../context/AuthContext';
 
-// Años disponibles (últimos 5 + próximo)  usuario.nombre    //// Falta corregir /////
-const ANIOS = (() => {
-  const hoy = new Date().getFullYear();
-  return Array.from({ length: 6 }, (_, i) => hoy - 2 + i);
-})();
+// Años disponibles (últimos 5 + próximo)  usuario.nombre    //// Falta corregir ///// 
+// Rango de años.
+  const hoydia = new Date();
+  const añoActual = hoydia.getFullYear();
+  const añoInicio = 1980;
+  const añoFin = añoActual + 1;
+  const anios = Array.from({ length: añoFin - añoInicio + 1 },(_, i) => añoInicio + i);
 
 export default function GestorResumenAnual() {
   const { user } = useAuth();  // Sutenticamos el usuario.
@@ -22,6 +24,7 @@ export default function GestorResumenAnual() {
   const [loading, setLoading] = useState(true);  // spiner.
   const [error, setError] = useState('');  // mensaje error.
 
+  // Funcion para seleccionar el año, recarga la página con los datos de ese año.
   const fetchDatos = useCallback(async () => {
     setLoading(true);  // Activamos el spiner.
     setError('');  // inicializamos el mensaje error.
@@ -40,7 +43,7 @@ export default function GestorResumenAnual() {
     fetchDatos();
   }, [fetchDatos]);
 
-  //// Falta corregir, tiene que consumir el service, no puede tener la ruta.   /////
+  // Navegamos a la pagina donde vemos el resumen y pasamos los datos pertinentes.
   const handleIrAlResumen = (clienteId, existe) => {
     navigate(`/resumen-anual-previsualizar/${clienteId}/${anioSel}`);
   };
@@ -117,7 +120,7 @@ export default function GestorResumenAnual() {
               onChange={(e) => setAnioSel(Number(e.target.value))}
               disabled={loading}
             >
-              {ANIOS.map(y => (
+              {anios.map(y => (
                 <option key={y} value={y}>{y}</option>
               ))}
             </select>

@@ -95,7 +95,7 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
                 <p className="text-muted small fw-semibold mb-2 text-uppercase">Datos del cliente</p>
                 <div className="row">
                   <div className="col-md-4">
-                    <Campo {...campoBase} label="RUT" field="rut"
+                    <Campo {...campoBase} label="RUT (ingresar números sin puntos ni guión)" field="rut"
                       value={form.rut} placeholder="12345678-9"
                       requerido 
                     />

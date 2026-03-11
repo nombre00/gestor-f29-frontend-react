@@ -4,14 +4,14 @@
 // Bibliotecas.
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
-// Componentes reutilizados (solo lectura → quitamos onChange)
+// Componentes reutilizados (solo lectura)
 import SeccionContribuyente from '../components/paginaPrevistaResumenAnual/seccionContribuyente';
 import SeccionVentas from '../components/paginaPrevistaResumenAnual/seccionVentas';
 import SeccionCompras from '../components/paginaPrevistaResumenAnual/seccionCompras';
 import SeccionRetencionesTotal from '../components/paginaPrevistaResumenAnual/seccionRetencionesTotal';
-// Servicios (ajusta los nombres según tu estructura real)
+// Servicios.
 import { obtenerResumenAnual, recalcularResumenAnual } from '../services/resumenesService';
-import { exportarResumenAExcel2 } from '../services/VistaResumenF29Service'; // reutilizamos el mismo exportador
+import { exportarResumenAExcel3 } from '../services/VistaResumenF29Service'; // reutilizamos el mismo exportador
 // Utilidad de formato (ya la tienes) año
 import { formatCLP } from '../services/F29Calculator';
 
@@ -20,24 +20,23 @@ import { formatCLP } from '../services/F29Calculator';
 export default function VistaResumenAnual() {
   const { clienteId, anio } = useParams(); // /resumen-anual-previsualizar/:clienteId/:anio
   const navigate = useNavigate();
-  //  const location = useLocation();   - no se usa.
 
-  const [resumenData, setResumenData] = useState(null);
+  const [resumenData, setResumenData] = useState(null);  // variable donde gaurdamos los datos del resumenAnual
   const [loading, setLoading] = useState(true);
   const [loadingAction, setLoadingAction] = useState(false);
   const [error, setError] = useState('');
 
   // Carga inicial
   useEffect(() => {
-    const fetchResumen = async () => {
-      setLoading(true);
-      setError('');
-      try {
-        const data = await obtenerResumenAnual(clienteId, anio);
-        setResumenData(data);
-      } catch (err) {
+    const fetchResumen = async () => {  // Función asíncrona.
+      setLoading(true);  // activamos el spiner.
+      setError('');  // inicializamos el mensaje error.
+      try {  // intentamos.
+        const data = await obtenerResumenAnual(clienteId, anio);  // funcion asíncrona.
+        setResumenData(data);  // guardamos los datos recuperados en la variable.
+      } catch (err) {  // si error.
         setError(err.message || 'No se pudo cargar el resumen anual');
-      } finally {
+      } finally {  // finalmente desactivamos el spiner.
         setLoading(false);
       }
     };
@@ -65,7 +64,7 @@ export default function VistaResumenAnual() {
     if (!resumenData?.contenido) return;
     setLoadingAction(true);
     try {
-      await exportarResumenAExcel2(resumenData.contenido, null); // null porque no usamos id_bd aquí
+      await exportarResumenAExcel3(resumenData.contenido, null); // null porque no usamos id_bd aquí
       alert('Excel generado y descargado');
     } catch (err) {
       setError(err.message || 'Error al exportar');
