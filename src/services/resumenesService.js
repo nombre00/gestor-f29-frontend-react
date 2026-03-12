@@ -2,6 +2,8 @@
 
 import api from '../api/api';
 
+
+// Funciones de ResumenF29.
 // Obtiene los f29s de los clientes de una empresa durante un periodo. 
 export const obtenerDashboardContador = async ({ mes, anio } = {}) => {
   const params = {};
@@ -36,6 +38,7 @@ export const obtenerResumenPorId = async (resumenId) => {
 
 
 ////// funciones de resumenAnual ///////
+// Obtiene los datos del dashboard.
 export const obtenerDashboardResumenAnual = async (anio) => {
   const response = await api.get('/api/f29/resumen-anual/dashboard', { params: { anio } });
   return response.data;

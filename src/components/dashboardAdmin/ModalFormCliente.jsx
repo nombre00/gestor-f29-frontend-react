@@ -28,7 +28,7 @@ export default function ModalFormCliente({ cliente, contadores, onGuardar, onCer
           nombre_comercial:    cliente.nombre_comercial    ?? '',
           giro:                cliente.giro                ?? '',
           actividad_economica: cliente.actividad_economica ?? '',
-          nro_cliente: cliente.nro_cliente                 ?? '',
+          nro_cliente:         cliente.nro_cliente         ?? '',
           direccion:           cliente.direccion           ?? '',
           comuna:              cliente.comuna              ?? '',
           ciudad:              cliente.ciudad              ?? '',
